@@ -3969,7 +3969,74 @@ p.section-kicker::after {
   }
 
   .portfolio-copy {
-    padding: 32px 24px;
+    padding: 32px 22px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .portfolio-copy .project-eyebrow {
+    text-align: center;
+    width: 100%;
+    margin-inline: auto;
+  }
+
+  .portfolio-copy .project-tag,
+  .portfolio-copy .exp-grade-pill {
+    margin-inline: auto;
+  }
+
+  .portfolio-copy div[style*="display: flex"],
+  .project-tags {
+    justify-content: center !important;
+    width: 100%;
+  }
+
+  .portfolio-copy h3 {
+    text-align: center;
+    width: 100%;
+    font-size: clamp(1.4rem, 4.8vw, 1.75rem);
+    margin-bottom: 12px;
+  }
+
+  .portfolio-copy p {
+    text-align: center;
+    width: 100%;
+    max-width: 460px;
+    margin-inline: auto;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+
+  .project-highlights {
+    text-align: center;
+    margin: 10px auto 20px;
+    border-left: none;
+    border-top: 2px solid var(--primary-red);
+    border-bottom: 2px solid var(--primary-red);
+    border-radius: var(--radius-sm);
+    width: 100%;
+    max-width: 440px;
+  }
+
+  .project-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .project-link {
+    justify-content: center;
+    text-align: center;
+    margin-inline: auto;
   }
 
   .experience-grid {
@@ -4341,6 +4408,43 @@ p.section-kicker::after {
 
   .portfolio-group-header h3 {
     font-size: 1.12rem;
+  }
+
+  .portfolio-copy {
+    padding: 24px 16px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .portfolio-copy .project-eyebrow {
+    font-size: 0.68rem;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+
+  .portfolio-copy h3 {
+    font-size: clamp(1.22rem, 5.5vw, 1.45rem);
+    margin-bottom: 10px;
+    text-align: center;
+  }
+
+  .portfolio-copy p {
+    font-size: 0.88rem;
+    line-height: 1.55;
+    margin-bottom: 16px;
+    text-align: center;
+  }
+
+  .project-highlights {
+    padding: 10px 12px;
+    font-size: 0.84rem;
+  }
+
+  .project-link {
+    font-size: 0.84rem;
   }
 
   .cta-headline {
