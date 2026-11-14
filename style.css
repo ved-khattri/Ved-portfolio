@@ -1672,7 +1672,7 @@ p.section-kicker::after {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 12px;
-  margin-bottom: 24px;
+  margin-bottom: 28px;
 }
 
 .cap-tag {
@@ -1745,7 +1745,7 @@ p.section-kicker::after {
   border-right: 1.5px solid var(--border-subtle);
   border-bottom: 1.5px solid var(--border-subtle);
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-  margin: 8px 0 28px;
+  margin: 0 0 28px;
 }
 
 .about-signoff .signoff-star {
@@ -3384,6 +3384,7 @@ p.section-kicker::after {
     gap: 12px;
     max-width: 520px;
     width: 100%;
+    margin-bottom: 28px;
   }
 
   .about-actions {
@@ -3805,7 +3806,15 @@ p.section-kicker::after {
     gap: 12px;
     max-width: 520px;
     width: 100%;
-    margin: 0 auto;
+    margin: 0 auto 30px;
+  }
+
+  .about-signoff {
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    max-width: 520px;
+    margin: 0 auto 32px;
   }
 
   .about-actions {
@@ -3816,12 +3825,6 @@ p.section-kicker::after {
     flex-wrap: wrap;
     width: 100%;
     margin: 0 auto 28px;
-  }
-
-  .about-signoff {
-    justify-content: center;
-    text-align: center;
-    width: 100%;
   }
 
   .services-grid {
@@ -4117,12 +4120,20 @@ p.section-kicker::after {
     gap: 8px;
     max-width: 360px;
     width: 100%;
-    margin: 0 auto;
+    margin: 0 auto 24px;
   }
 
   .cap-tag {
     padding: 8px 10px;
     font-size: 0.78rem;
+  }
+
+  .about-signoff {
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    max-width: 360px;
+    margin: 0 auto 24px;
   }
 
   .about-actions {
