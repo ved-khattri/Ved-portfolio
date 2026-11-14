@@ -3568,13 +3568,35 @@ p.section-kicker::after {
 /*---768px BREAKPOINT: TABLETS & MOBILE LANDSCAPE---*/
 @media (max-width: 768px) {
   .nav-container {
-    padding: 10px 14px;
+    padding: 8px 16px;
+  }
+
+  .nav-container.scrolled {
+    padding: 8px 16px;
   }
 
   .navbar {
     position: relative;
-    padding: 4px 8px 4px 6px;
-    gap: 6px;
+    padding: 5px 12px 5px 8px;
+    gap: 8px;
+    border-radius: 0;
+    box-shadow: 0 8px 24px rgba(42, 9, 3, 0.4), 2.5px 2.5px 0px #420f02;
+    width: 100%;
+    max-width: 520px;
+  }
+
+  .navbar::before {
+    opacity: 1 !important;
+  }
+
+  .navbar .nav-serrated-edge {
+    opacity: 1 !important;
+    transform: scaleX(1) !important;
+  }
+
+  .navbar .nav-logo,
+  .navbar .nav-actions {
+    flex: 0 0 auto;
   }
 
   .nav-brand-text {
@@ -3585,6 +3607,13 @@ p.section-kicker::after {
 
   .nav-cta-pill {
     display: none !important;
+  }
+
+  .nav-logo-mark {
+    width: 32px;
+    height: 32px;
+    border-color: var(--accent-yellow);
+    box-shadow: 2px 2px 0px rgba(42, 9, 3, 0.35);
   }
 
   .nav-links {
@@ -3646,16 +3675,45 @@ p.section-kicker::after {
 
   .nav-burger {
     display: flex;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+  }
+
+  .poster-hero-section {
+    padding: 72px 0 0;
+  }
+
+  .poster-canvas {
+    width: calc(100% - 28px);
+    max-width: 100%;
+    padding: 10px 0 0;
+  }
+
+  .poster-top-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 8px 10px;
+    margin-bottom: 16px;
+  }
+
+  .poster-trio-word {
+    font-size: clamp(0.78rem, 3vw, 1.15rem);
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+  }
+
+  .poster-title-area {
+    padding: 10px 14px 6px;
   }
 
   .h1-badge-container {
     justify-content: center;
     padding-right: 0;
-    margin-bottom: 12px;
-  }
-
-  .poster-top-header {
-    padding: 16px 20px 10px;
+    margin-bottom: 8px;
   }
 
   .poster-stage-grid {
@@ -4519,22 +4577,53 @@ p.section-kicker::after {
     font-size: 0.72rem;
   }
 
+  .poster-hero-section {
+    padding: 68px 0 0;
+  }
+
+  .poster-canvas {
+    width: calc(100% - 24px);
+    padding: 6px 0 0;
+  }
+
   .poster-top-header {
-    padding: 12px 14px 8px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 6px;
+    margin-bottom: 12px;
   }
 
   .poster-trio-word {
-    font-size: 0.95rem;
-    letter-spacing: 0.1em;
+    font-size: clamp(0.72rem, 3.2vw, 0.92rem);
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+  }
+
+  .poster-title-area {
+    padding: 8px 8px 4px;
   }
 
   .h1-indo-title {
-    font-size: clamp(3rem, 17vw, 4.8rem);
+    font-size: clamp(2.6rem, 14vw, 3.8rem);
   }
 
   .h1-badge-container {
     justify-content: center;
     padding-right: 0;
+    margin-bottom: 6px;
+  }
+
+  .poster-editorial-tagline {
+    margin-top: 10px;
+    gap: 8px;
+  }
+
+  .tagline-english {
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-align: center;
   }
 
   .btn {
@@ -4597,14 +4686,61 @@ p.section-kicker::after {
     font-size: 1.05rem;
   }
 
-  .poster-top-header {
-    flex-direction: column;
+  .nav-container {
+    padding: 6px 14px;
+  }
+
+  .nav-container.scrolled {
+    padding: 6px 14px;
+  }
+
+  .navbar {
+    padding: 4px 8px 4px 6px;
     gap: 6px;
-    text-align: center;
+  }
+
+  .poster-hero-section {
+    padding: 62px 0 0;
+  }
+
+  .poster-canvas {
+    width: calc(100% - 18px);
+    padding: 4px 0 0;
+  }
+
+  .poster-top-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 2px;
+    margin-bottom: 10px;
+  }
+
+  .poster-trio-word {
+    font-size: clamp(0.66rem, 3vw, 0.82rem);
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+  }
+
+  .poster-title-area {
+    padding: 4px 4px 2px;
   }
 
   .h1-indo-title {
-    font-size: 2.8rem;
+    font-size: clamp(2.1rem, 12vw, 2.5rem);
+  }
+
+  .poster-center-visual {
+    max-width: 210px;
+  }
+
+  .hover-gallery.poster-portrait-wrap {
+    max-width: 210px;
+  }
+
+  .hover-gallery.poster-portrait-wrap .poster-portrait-img {
+    max-height: 210px;
   }
 
   .cta-gif-box {
