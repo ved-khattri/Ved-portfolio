@@ -3400,7 +3400,41 @@ p.section-kicker::after {
   /* Services / Focus Section */
   .services-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 22px;
+    gap: 20px;
+  }
+
+  .service-card {
+    min-height: unset;
+  }
+
+  .service-img {
+    padding: 22px 18px 14px;
+  }
+
+  .service-img img {
+    height: 74px;
+  }
+
+  .service-body {
+    padding: 20px 22px 24px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .service-body h3 {
+    text-align: center;
+    font-size: 1.3rem;
+  }
+
+  .service-body p {
+    text-align: center;
+    font-size: 0.96rem;
+  }
+
+  .service-cta-card {
+    padding: 36px 24px;
   }
 
   /* Portfolio Section */
@@ -3829,6 +3863,71 @@ p.section-kicker::after {
 
   .services-grid {
     grid-template-columns: 1fr;
+    gap: 20px;
+    max-width: 520px;
+    margin: 0 auto;
+  }
+
+  .service-card {
+    min-height: unset;
+    max-width: 520px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .service-header-strip {
+    padding: 12px 18px;
+  }
+
+  .service-img {
+    padding: 20px 16px 12px;
+  }
+
+  .service-img img {
+    height: 70px;
+  }
+
+  .service-body {
+    padding: 18px 20px 22px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .service-body h3 {
+    text-align: center;
+    font-size: 1.25rem;
+    margin-bottom: 8px;
+  }
+
+  .service-body p {
+    text-align: center;
+    font-size: 0.94rem;
+    line-height: 1.55;
+    max-width: 440px;
+    margin: 0 auto;
+  }
+
+  .service-cta-card {
+    padding: 32px 20px;
+    min-height: unset;
+  }
+
+  .service-cta-card .cta-icon {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 12px;
+  }
+
+  .service-cta-card h3 {
+    font-size: 1.5rem;
+    text-align: center;
+  }
+
+  .service-cta-card p {
+    font-size: 0.96rem;
+    text-align: center;
   }
 
   .portfolio-group-header {
@@ -4150,6 +4249,74 @@ p.section-kicker::after {
     width: 100%;
     max-width: 280px;
     justify-content: center;
+  }
+
+  .services-grid {
+    gap: 16px;
+  }
+
+  .service-card {
+    min-height: unset;
+    border-radius: var(--radius-sm);
+  }
+
+  .service-header-strip {
+    padding: 10px 14px;
+  }
+
+  .service-badge-num {
+    font-size: 0.72rem;
+  }
+
+  .service-badge-indo {
+    font-size: 0.82rem;
+  }
+
+  .service-img {
+    padding: 16px 12px 10px;
+  }
+
+  .service-img img {
+    height: 58px;
+  }
+
+  .service-body {
+    padding: 14px 16px 18px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .service-body h3 {
+    font-size: 1.15rem;
+    margin-bottom: 6px;
+    text-align: center;
+  }
+
+  .service-body p {
+    font-size: 0.88rem;
+    line-height: 1.5;
+    text-align: center;
+  }
+
+  .service-cta-card {
+    padding: 26px 16px;
+  }
+
+  .service-cta-card .cta-icon {
+    width: 48px;
+    height: 48px;
+  }
+
+  .service-cta-card h3 {
+    font-size: 1.35rem;
+    text-align: center;
+  }
+
+  .service-cta-card p {
+    font-size: 0.88rem;
+    text-align: center;
   }
 
   .experience-intro h2 {
