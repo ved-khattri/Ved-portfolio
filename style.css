@@ -4340,23 +4340,23 @@ p.section-kicker::after {
 
   .capabilities-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
     gap: 8px;
-    max-width: 360px;
+    max-width: 340px;
     width: 100%;
     margin: 0 auto 24px;
   }
 
   .cap-tag {
-    padding: 8px 10px;
-    font-size: 0.78rem;
+    padding: 9px 14px;
+    font-size: 0.84rem;
   }
 
   .about-signoff {
     justify-content: center;
     text-align: center;
     width: 100%;
-    max-width: 360px;
+    max-width: 340px;
     margin: 0 auto 24px;
   }
 
@@ -4672,6 +4672,20 @@ p.section-kicker::after {
 
   .about-copy h2 {
     font-size: 1.18rem;
+  }
+
+  .capabilities-grid {
+    max-width: 290px;
+    gap: 7px;
+  }
+
+  .cap-tag {
+    padding: 8px 12px;
+    font-size: 0.8rem;
+  }
+
+  .about-signoff {
+    max-width: 290px;
   }
 
   .experience-intro h2 {
