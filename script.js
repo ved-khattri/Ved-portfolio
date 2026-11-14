@@ -7,10 +7,10 @@ const trackedSections = document.querySelectorAll("section[id]");
 let isScrolled = false;
 let ticking = false;
 
-function updateNavbar() {
-  const scrollY = window.scrollY;
+function updateNavbar(scrollVal) {
+  const scrollY = typeof scrollVal === "number" ? scrollVal : (window.scrollY || window.pageYOffset || 0);
 
-  if (!isScrolled && scrollY > 40) {
+  if (!isScrolled && scrollY > 50) {
     isScrolled = true;
     navbar?.classList.add("scrolled");
     navContainer?.classList.add("scrolled");
@@ -44,7 +44,7 @@ function updateNavbar() {
 
 function onScrollHandler() {
   if (!ticking) {
-    window.requestAnimationFrame(updateNavbar);
+    window.requestAnimationFrame(() => updateNavbar());
     ticking = true;
   }
 }
@@ -68,7 +68,9 @@ if (typeof Lenis !== "undefined") {
   }
   requestAnimationFrame(raf);
 
-  lenis.on("scroll", onScrollHandler);
+  lenis.on("scroll", (e) => {
+    updateNavbar(e.scroll);
+  });
 
   document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
     anchor.addEventListener("click", function (e) {
