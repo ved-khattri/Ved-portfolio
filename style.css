@@ -3255,8 +3255,20 @@ p.section-kicker::after {
     grid-column: auto;
     order: 2;
     max-width: 310px;
-    min-height: 400px;
+    min-height: unset;
+    height: auto;
     margin: 0 auto;
+  }
+
+  .hover-gallery.poster-portrait-wrap {
+    min-height: unset;
+    height: auto;
+    max-width: 310px;
+    aspect-ratio: 1 / 1;
+  }
+
+  .hover-gallery.poster-portrait-wrap .poster-portrait-img {
+    max-height: 310px;
   }
 
   .box-left {
@@ -3483,14 +3495,38 @@ p.section-kicker::after {
 
   .poster-stage-grid {
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 16px;
     padding: 16px 18px 24px;
   }
 
   .poster-center-visual {
-    max-width: 300px;
-    min-height: 350px;
-    margin: 0 auto 12px;
+    width: 100%;
+    max-width: 280px;
+    min-height: unset;
+    height: auto;
+    margin: 6px auto;
+  }
+
+  .hover-gallery.poster-portrait-wrap {
+    width: 100%;
+    max-width: 280px;
+    min-height: unset;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    align-items: flex-end;
+  }
+
+  .hover-gallery.poster-portrait-wrap .poster-portrait-img {
+    height: 100%;
+    max-height: 280px;
+    object-position: bottom center;
+  }
+
+  .poster-red-backdrop {
+    height: 72%;
+    border-radius: 140px 140px 0 0;
+    left: -12px;
+    right: -12px;
   }
 
   .box-left,
@@ -3500,7 +3536,8 @@ p.section-kicker::after {
     margin-inline: auto;
     justify-self: center;
     text-align: left;
-    padding: 18px 22px;
+    padding: 16px 20px;
+    gap: 10px;
     background: rgba(255, 253, 249, 0.7);
     border: 1.5px solid rgba(115, 28, 3, 0.16);
     border-radius: 12px;
@@ -3753,6 +3790,24 @@ p.section-kicker::after {
   .btn {
     padding: 12px 20px;
     font-size: 0.88rem;
+  }
+
+  .poster-center-visual {
+    max-width: 250px;
+    min-height: unset;
+    height: auto;
+    margin: 4px auto;
+  }
+
+  .hover-gallery.poster-portrait-wrap {
+    max-width: 250px;
+    min-height: unset;
+    height: auto;
+    aspect-ratio: 1 / 1;
+  }
+
+  .hover-gallery.poster-portrait-wrap .poster-portrait-img {
+    max-height: 250px;
   }
 
   .box-left,
