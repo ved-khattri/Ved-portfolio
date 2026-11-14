@@ -3305,6 +3305,39 @@ p.section-kicker::after {
     font-size: clamp(3.8rem, 11vw, 6.8rem);
   }
 
+  /* Section Spacing & Headers on 1024px */
+  .about,
+  .services,
+  .portfolio,
+  .experience,
+  .contact-cta {
+    padding: 56px 0;
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 34px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .section-header h2 {
+    font-size: clamp(2rem, 3.6vw, 2.65rem);
+    text-align: center;
+    line-height: 1.18;
+    margin-bottom: 12px;
+  }
+
+  .section-header .section-sub,
+  .section-header p:not(.section-kicker) {
+    font-size: 0.98rem;
+    max-width: 580px;
+    text-align: center;
+    margin-inline: auto;
+    line-height: 1.6;
+  }
+
   /* About Section */
   .about-grid {
     grid-template-columns: 280px 1fr;
@@ -3313,6 +3346,12 @@ p.section-kicker::after {
 
   .about-image-card {
     max-width: 280px;
+  }
+
+  .about-copy h2 {
+    font-size: clamp(1.85rem, 3.4vw, 2.45rem);
+    line-height: 1.2;
+    margin-bottom: 12px;
   }
 
   .capabilities-grid {
@@ -3327,6 +3366,18 @@ p.section-kicker::after {
   }
 
   /* Portfolio Section */
+  .portfolio-group-header {
+    justify-content: center;
+    text-align: center;
+    gap: 12px;
+    margin: 12px 0 20px;
+  }
+
+  .portfolio-group-header h3 {
+    font-size: 1.35rem;
+    text-align: center;
+  }
+
   .portfolio-card {
     grid-template-columns: 1fr 280px;
   }
@@ -3351,7 +3402,19 @@ p.section-kicker::after {
     gap: 32px;
   }
 
+  .experience-intro h2 {
+    font-size: clamp(1.85rem, 3.4vw, 2.45rem);
+    line-height: 1.2;
+    margin-bottom: 14px;
+  }
+
   /* CTA / Contact Section */
+  .cta-headline {
+    font-size: clamp(2.1rem, 4vw, 2.9rem);
+    text-align: center;
+    line-height: 1.15;
+  }
+
   .cta-card {
     padding: 48px 28px 36px;
   }
@@ -3555,9 +3618,54 @@ p.section-kicker::after {
     font-size: 1.1rem;
   }
 
+  /* Section Spacing & Headers on 768px */
+  .about,
+  .services,
+  .portfolio,
+  .experience,
+  .contact-cta {
+    padding: 44px 0;
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 26px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .section-header h2 {
+    font-size: clamp(1.65rem, 4.6vw, 2.15rem);
+    text-align: center;
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+
+  .section-header .section-sub,
+  .section-header p:not(.section-kicker) {
+    font-size: 0.92rem;
+    max-width: 480px;
+    text-align: center;
+    margin-inline: auto;
+    line-height: 1.55;
+  }
+
+  .section-kicker,
+  p.section-kicker {
+    font-size: 0.76rem !important;
+    gap: 8px !important;
+    margin-bottom: 10px !important;
+  }
+
+  .mark-red,
+  .mark-yellow {
+    padding: 2px 10px;
+  }
+
   .about-grid {
     grid-template-columns: 1fr;
-    gap: 40px;
+    gap: 36px;
   }
 
   .about-image-wrap {
@@ -3565,17 +3673,87 @@ p.section-kicker::after {
     margin: 0 auto;
   }
 
+  .about-image-card {
+    max-width: 300px;
+    margin: 0 auto;
+  }
+
+  .about-copy {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .about-copy .section-kicker {
+    margin-inline: auto;
+  }
+
+  .about-copy h2 {
+    text-align: center;
+    font-size: clamp(1.5rem, 4.2vw, 1.95rem);
+    line-height: 1.22;
+    margin-inline: auto;
+    max-width: 520px;
+    margin-bottom: 12px;
+  }
+
+  .about-lead {
+    text-align: center;
+    font-size: 1rem;
+    margin-inline: auto;
+    max-width: 500px;
+    line-height: 1.55;
+  }
+
+  .about-body {
+    text-align: center;
+    font-size: 0.92rem;
+    margin-inline: auto;
+    max-width: 500px;
+    line-height: 1.65;
+  }
+
+  .capabilities-block {
+    width: 100%;
+    text-align: center;
+  }
+
+  .capabilities-title {
+    text-align: center;
+    margin-inline: auto;
+  }
+
   .capabilities-grid {
     grid-template-columns: 1fr;
   }
 
-  .about-image-card {
-    max-width: 320px;
-    margin: 0 auto;
+  .about-actions {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .about-signoff {
+    justify-content: center;
+    text-align: center;
+    width: 100%;
   }
 
   .services-grid {
     grid-template-columns: 1fr;
+  }
+
+  .portfolio-group-header {
+    justify-content: center;
+    text-align: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 12px 0 20px;
+  }
+
+  .portfolio-group-header h3 {
+    text-align: center;
+    font-size: 1.25rem;
   }
 
   .portfolio-card {
@@ -3613,11 +3791,56 @@ p.section-kicker::after {
 
   .experience-intro {
     position: static;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 30px;
+  }
+
+  .experience-intro .section-kicker {
+    margin-inline: auto;
+  }
+
+  .experience-intro h2 {
+    text-align: center;
+    font-size: clamp(1.6rem, 4.4vw, 2.05rem);
+    line-height: 1.2;
+    margin-inline: auto;
+    max-width: 480px;
+    margin-bottom: 12px;
+  }
+
+  .experience-intro p:not(.section-kicker),
+  .experience-intro .experience-sub {
+    text-align: center;
+    font-size: 0.94rem;
+    margin-inline: auto;
+    max-width: 460px;
+    margin-bottom: 22px;
+    line-height: 1.6;
+  }
+
+  .experience-intro .btn {
+    margin-inline: auto;
   }
 
   .cta-card {
     flex-direction: column;
     padding: 48px 20px 40px;
+    text-align: center;
+  }
+
+  .cta-headline {
+    text-align: center;
+    font-size: clamp(1.8rem, 5.2vw, 2.3rem);
+    line-height: 1.18;
+    margin-bottom: 14px;
+  }
+
+  .cta-lead {
+    font-size: 0.96rem;
+    margin-bottom: 22px;
     text-align: center;
   }
 
@@ -3709,6 +3932,99 @@ p.section-kicker::after {
 @media (max-width: 480px) {
   .section-wrap {
     width: calc(100% - 24px);
+  }
+
+  .about,
+  .services,
+  .portfolio,
+  .experience,
+  .contact-cta {
+    padding: 36px 0;
+  }
+
+  .section-header {
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .section-header h2 {
+    font-size: clamp(1.35rem, 5.8vw, 1.7rem);
+    line-height: 1.22;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+
+  .section-header .section-sub,
+  .section-header p:not(.section-kicker) {
+    font-size: 0.86rem;
+    max-width: 320px;
+    line-height: 1.5;
+    text-align: center;
+  }
+
+  .section-kicker,
+  p.section-kicker {
+    font-size: 0.72rem !important;
+    gap: 6px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .mark-red,
+  .mark-yellow {
+    padding: 1px 8px;
+    border-radius: 4px;
+  }
+
+  .about-copy h2 {
+    font-size: clamp(1.3rem, 5.4vw, 1.6rem);
+    line-height: 1.25;
+    margin-bottom: 10px;
+  }
+
+  .about-lead {
+    font-size: 0.92rem;
+    line-height: 1.5;
+    margin-bottom: 14px;
+  }
+
+  .about-body {
+    font-size: 0.85rem;
+    line-height: 1.6;
+    margin-bottom: 12px;
+  }
+
+  .experience-intro h2 {
+    font-size: clamp(1.35rem, 5.8vw, 1.7rem);
+    line-height: 1.22;
+    margin-bottom: 8px;
+  }
+
+  .experience-intro p:not(.section-kicker),
+  .experience-intro .experience-sub {
+    font-size: 0.86rem;
+    margin-bottom: 18px;
+    line-height: 1.55;
+  }
+
+  .portfolio-group-header {
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding-bottom: 8px;
+  }
+
+  .portfolio-group-header h3 {
+    font-size: 1.12rem;
+  }
+
+  .cta-headline {
+    font-size: clamp(1.5rem, 6.5vw, 1.85rem);
+    line-height: 1.2;
+    margin-bottom: 12px;
+  }
+
+  .cta-lead {
+    font-size: 0.88rem;
   }
 
   .footer-nav-columns {
@@ -3827,6 +4143,26 @@ p.section-kicker::after {
 
 /*---380px BREAKPOINT: COMPACT MOBILE PHONES---*/
 @media (max-width: 380px) {
+  .section-header h2 {
+    font-size: 1.26rem;
+  }
+
+  .about-copy h2 {
+    font-size: 1.18rem;
+  }
+
+  .experience-intro h2 {
+    font-size: 1.2rem;
+  }
+
+  .cta-headline {
+    font-size: 1.35rem;
+  }
+
+  .portfolio-group-header h3 {
+    font-size: 1.05rem;
+  }
+
   .poster-top-header {
     flex-direction: column;
     gap: 6px;

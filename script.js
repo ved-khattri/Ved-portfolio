@@ -79,7 +79,7 @@ if (typeof Lenis !== "undefined") {
       const target = document.querySelector(href);
       if (target) {
         e.preventDefault();
-        lenis.scrollTo(target, { offset: -30, duration: 1.2 });
+        lenis.scrollTo(target, { offset: -75, duration: 1.2 });
       }
     });
   });
