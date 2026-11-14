@@ -8,8 +8,15 @@
       name="description"
       content="Ved Khattri - BBA student at IIM Bangalore, content creator and builder. Exploring the intersection of business, creativity and technology."
     />
-    <link rel="icon" type="image/png" href="assets/images/logos/vp_log.png" />
-    <link rel="apple-touch-icon" href="assets/images/logos/vp_log.png" />
+    <link rel="icon" type="image/png" href="assets/images/logos/vp_log.webp" />
+    <link rel="apple-touch-icon" href="assets/images/logos/vp_log.webp" />
+    <link
+      rel="preload"
+      as="image"
+      href="assets/images/hero-image.webp"
+      type="image/webp"
+      fetchpriority="high"
+    />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -33,14 +40,17 @@
           aria-label="Ved Pasco Home"
           title="Ved Pasco"
         >
-          <img
-            src="assets/images/logos/vp_log.png"
-            alt="VP Logo"
-            class="nav-logo-img"
-            id="nav-logo-img"
-            width="34"
-            height="34"
-          />
+          <span class="nav-logo-mark">
+            <img
+              src="assets/images/logos/vp_log.webp"
+              alt="VP Logo"
+              class="nav-logo-img"
+              id="nav-logo-img"
+              width="34"
+              height="34"
+            />
+          </span>
+          <span class="nav-brand-text">Ved Pasco</span>
         </a>
 
         <div class="nav-links" id="nav-links">
@@ -120,17 +130,17 @@
               <!---HERO HOVER GALLERY PORTRAIT--->
               <figure class="hover-gallery poster-portrait-wrap">
                 <img
-                  src="assets/images/hero-2.png"
+                  src="assets/images/hero-2.webp"
                   alt="Ved Khattri - Creator and Builder"
                   class="poster-portrait-img"
                 />
                 <img
-                  src="assets/images/hero-3.png"
+                  src="assets/images/hero-3.webp"
                   alt="Ved Khattri - Creator and Builder"
                   class="poster-portrait-img"
                 />
                 <img
-                  src="assets/images/hero-image.png"
+                  src="assets/images/hero-image.webp"
                   alt="Ved Khattri - Creator and Builder"
                   class="poster-portrait-img"
                 />
@@ -498,7 +508,7 @@
                   </svg>
 
                   <img
-                    src="assets/images/me.png"
+                    src="assets/images/me.webp"
                     alt="Ved Khattri"
                     class="about-portrait-img"
                   />
@@ -908,7 +918,7 @@
             </div>
             <div class="portfolio-visual bg-folk-red">
               <img
-                src="assets/images/logos/vp_log.png"
+                src="assets/images/logos/vp_log.webp"
                 alt="VP Personal Brand Logo"
                 class="portfolio-logo-img"
               />
@@ -932,7 +942,7 @@
             <div class="portfolio-visual bg-folk-dark">
               <div class="portfolio-logo-badge badge-white">
                 <img
-                  src="assets/images/logos/claude.png"
+                  src="assets/images/logos/claude.webp"
                   alt="Claude AI &amp; Automation"
                   class="portfolio-logo-img"
                 />
@@ -958,7 +968,7 @@
             <div class="portfolio-visual bg-folk-yellow">
               <div class="portfolio-logo-badge badge-white">
                 <img
-                  src="assets/images/logos/brand.png"
+                  src="assets/images/logos/brand.webp"
                   alt="Founder Branding &amp; Content Systems"
                   class="portfolio-logo-img"
                 />
@@ -1045,7 +1055,7 @@
             </div>
             <div class="portfolio-visual bg-folk-red">
               <img
-                src="assets/images/logos/Finn.png"
+                src="assets/images/logos/Finn.webp"
                 alt="FinnDot Logo"
                 class="portfolio-logo-img"
               />
@@ -1189,7 +1199,7 @@
             <div class="portfolio-visual bg-battlex-black">
               <div class="portfolio-logo-badge badge-black">
                 <img
-                  src="assets/images/logos/battelx.png"
+                  src="assets/images/logos/battelx.webp"
                   alt="BattleX Paintball Logo"
                   class="portfolio-logo-img"
                 />
@@ -1326,7 +1336,7 @@
                 <span class="exp-period">CLASS X · FOUNDATION</span>
                 <div class="exp-icon">
                   <img
-                    src="assets/images/logos/sun_international.png"
+                    src="assets/images/logos/sun_international.webp"
                     alt="Sun International School Logo"
                   />
                 </div>
@@ -1384,14 +1394,18 @@
                 loop
                 muted
                 playsinline
-                poster="assets/images/gif/office_thumb.jpg"
+                poster="assets/images/gif/office_thumb.webp"
                 class="cta-office-media"
               >
                 <source src="assets/images/gif/office.mp4" type="video/mp4" />
                 <img
-                  src="assets/images/gif/office.gif"
+                  src="assets/images/gif/office.webp"
                   alt="Ved Office Animation"
                   class="cta-office-media"
+                  width="480"
+                  height="480"
+                  loading="lazy"
+                  decoding="async"
                 />
               </video>
             </div>
@@ -1487,7 +1501,7 @@
               >
                 <div class="cassette-visual-frame">
                   <img
-                    src="assets/images/cassette_transparent.png"
+                    src="assets/images/cassette_transparent.webp"
                     alt="Creator's Mix Cassette Tape"
                     class="cassette-tape-art"
                   />
