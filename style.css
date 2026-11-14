@@ -4149,6 +4149,51 @@ p.section-kicker::after {
     margin-inline: auto;
   }
 
+  .experience-cards {
+    width: 100%;
+    max-width: 540px;
+    margin-inline: auto;
+  }
+
+  .exp-card {
+    width: 100%;
+    max-width: 540px;
+    margin-inline: auto;
+  }
+
+  .exp-body {
+    padding: 22px 20px 24px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .exp-status-badge,
+  .exp-grade-pill {
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .exp-body h3 {
+    text-align: center;
+    font-size: 1.3rem;
+  }
+
+  .exp-role {
+    text-align: center;
+    font-size: 0.98rem;
+  }
+
+  .exp-meta-tags {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .exp-meta-tag {
+    justify-content: center;
+  }
+
   .cta-card {
     flex-direction: column;
     padding: 48px 20px 40px;
@@ -4492,6 +4537,65 @@ p.section-kicker::after {
     line-height: 1.55;
   }
 
+  .exp-header {
+    padding: 12px 16px;
+  }
+
+  .exp-period {
+    font-size: 0.78rem;
+  }
+
+  .exp-icon {
+    width: 46px;
+    height: 46px;
+  }
+
+  .exp-icon img {
+    width: 34px;
+    height: 34px;
+  }
+
+  .exp-body {
+    padding: 18px 14px 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .exp-status-badge,
+  .exp-grade-pill {
+    margin-inline: auto;
+    font-size: 0.68rem;
+    padding: 3px 8px;
+    text-align: center;
+  }
+
+  .exp-body h3 {
+    text-align: center;
+    font-size: 1.15rem;
+    margin-bottom: 6px;
+  }
+
+  .exp-role {
+    text-align: center;
+    font-size: 0.88rem;
+    margin-bottom: 8px;
+  }
+
+  .exp-meta-tags {
+    justify-content: center;
+    text-align: center;
+    gap: 6px;
+    margin-top: 10px;
+  }
+
+  .exp-meta-tag {
+    justify-content: center;
+    font-size: 0.78rem;
+    padding: 4px 10px;
+  }
+
   .portfolio-group-header {
     flex-direction: column;
     align-items: center;
@@ -4741,6 +4845,37 @@ p.section-kicker::after {
 
   .experience-intro h2 {
     font-size: 1.2rem;
+  }
+
+  .exp-header {
+    padding: 10px 12px;
+  }
+
+  .exp-period {
+    font-size: 0.72rem;
+  }
+
+  .exp-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .exp-icon img {
+    width: 28px;
+    height: 28px;
+  }
+
+  .exp-body h3 {
+    font-size: 1.05rem;
+  }
+
+  .exp-role {
+    font-size: 0.82rem;
+  }
+
+  .exp-meta-tag {
+    font-size: 0.74rem;
+    padding: 3px 8px;
   }
 
   .cta-headline {
