@@ -4013,33 +4013,44 @@ p.section-kicker::after {
     font-size: 1.25rem;
   }
 
+  .portfolio-list {
+    gap: 32px;
+  }
+
   .portfolio-card {
     grid-template-columns: 1fr;
   }
 
   .portfolio-visual {
-    min-height: 260px;
+    min-height: 270px;
     border-left: none;
     border-top: 3px solid var(--deep-red);
+    padding: 28px 20px 44px;
+    position: relative;
   }
 
   .portfolio-logo-badge {
-    width: 175px;
-    height: 175px;
+    width: 150px;
+    height: 150px;
   }
 
   .portfolio-logo-badge .portfolio-logo-img {
-    width: 120px;
-    height: 120px;
+    width: 105px;
+    height: 105px;
   }
 
   .portfolio-visual > .portfolio-logo-img {
-    width: 175px;
-    height: 175px;
+    width: 150px;
+    height: 150px;
+  }
+
+  .portfolio-art-caption {
+    right: 18px;
+    bottom: 14px;
   }
 
   .portfolio-copy {
-    padding: 32px 22px;
+    padding: 32px 22px 36px;
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -4607,8 +4618,12 @@ p.section-kicker::after {
     font-size: 1.12rem;
   }
 
+  .portfolio-list {
+    gap: 28px;
+  }
+
   .portfolio-copy {
-    padding: 24px 16px;
+    padding: 24px 16px 32px;
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -4640,8 +4655,42 @@ p.section-kicker::after {
     font-size: 0.84rem;
   }
 
+  .project-actions {
+    margin-top: 4px;
+    margin-bottom: 6px;
+    gap: 8px;
+  }
+
   .project-link {
     font-size: 0.84rem;
+    margin-bottom: 6px;
+  }
+
+  .portfolio-visual {
+    min-height: 250px;
+    padding: 24px 14px 40px;
+  }
+
+  .portfolio-logo-badge {
+    width: 135px;
+    height: 135px;
+  }
+
+  .portfolio-logo-badge .portfolio-logo-img {
+    width: 90px;
+    height: 90px;
+  }
+
+  .portfolio-visual > .portfolio-logo-img {
+    width: 135px;
+    height: 135px;
+  }
+
+  .portfolio-art-caption {
+    right: 14px;
+    bottom: 12px;
+    font-size: 0.65rem;
+    padding: 3px 8px;
   }
 
   .cta-headline {
@@ -4884,6 +4933,41 @@ p.section-kicker::after {
 
   .portfolio-group-header h3 {
     font-size: 1.05rem;
+  }
+
+  .portfolio-list {
+    gap: 24px;
+  }
+
+  .portfolio-copy {
+    padding: 20px 12px 28px;
+  }
+
+  .portfolio-visual {
+    min-height: 230px;
+    padding: 20px 10px 36px;
+  }
+
+  .portfolio-logo-badge {
+    width: 120px;
+    height: 120px;
+  }
+
+  .portfolio-logo-badge .portfolio-logo-img {
+    width: 80px;
+    height: 80px;
+  }
+
+  .portfolio-visual > .portfolio-logo-img {
+    width: 120px;
+    height: 120px;
+  }
+
+  .portfolio-art-caption {
+    right: 10px;
+    bottom: 10px;
+    font-size: 0.6rem;
+    padding: 2px 7px;
   }
 
   .nav-container {
