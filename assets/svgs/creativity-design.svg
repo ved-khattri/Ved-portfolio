@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 100" width="120" height="100" fill="none">
+  <!-- Artist Palette Contour -->
+  <path d="M22 48 C22 28 38 18 64 18 C88 18 102 30 102 46 C102 60 92 68 80 68 C74 68 70 64 66 64 C62 64 58 68 52 72 C42 78 22 72 22 48 Z" fill="#FBF4EE" stroke="#731C03" stroke-width="3" stroke-linejoin="round"/>
+  <!-- Palette Thumb Hole -->
+  <circle cx="38" cy="54" r="7" fill="#FDF9F5" stroke="#731C03" stroke-width="2.5"/>
+  <!-- Folk Swatches -->
+  <circle cx="44" cy="32" r="6.5" fill="#9F1304" stroke="#731C03" stroke-width="2"/>
+  <circle cx="64" cy="28" r="6.5" fill="#F2C51B" stroke="#731C03" stroke-width="2"/>
+  <circle cx="84" cy="36" r="6.5" fill="#731C03" stroke="#731C03" stroke-width="2"/>
+  <!-- Stylus / Brush -->
+  <path d="M66 82 L94 44 L102 52 L74 90 Z" fill="#9F1304" stroke="#731C03" stroke-width="2.5" stroke-linejoin="round"/>
+  <polygon points="66,82 60,94 74,90" fill="#F2C51B" stroke="#731C03" stroke-width="2"/>
+  <circle cx="60" cy="94" r="1.5" fill="#731C03"/>
+  <!-- Sparkle Star -->
+  <path d="M104 16 L105.5 11 L107 16 L112 17.5 L107 19 L105.5 24 L104 19 L99 17.5 Z" fill="#F2C51B" stroke="#731C03" stroke-width="1.5"/>
+</svg>
