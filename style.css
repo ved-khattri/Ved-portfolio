@@ -3850,7 +3850,7 @@ p.section-kicker::after {
 
   .about-image-wrap {
     position: static;
-    margin: 0 auto;
+    margin: 0 auto 28px;
     width: 100%;
     display: flex;
     justify-content: center;
@@ -3858,12 +3858,22 @@ p.section-kicker::after {
   }
 
   .about-image-card {
-    width: min(320px, 85vw);
-    height: min(320px, 85vw);
-    min-height: 260px;
-    max-width: 320px;
+    width: min(360px, calc(100vw - 48px));
+    height: auto;
     aspect-ratio: 1 / 1;
+    min-height: unset;
+    max-width: 360px;
     margin: 0 auto;
+  }
+
+  .about-corner-stamp-bar {
+    bottom: 14px;
+    padding: 0 12px;
+  }
+
+  .about-corner-stamp {
+    font-size: 0.68rem;
+    padding: 5px 12px;
   }
 
   .about-copy {
@@ -4410,7 +4420,7 @@ p.section-kicker::after {
 
   .about-image-wrap {
     position: static;
-    margin: 0 auto;
+    margin: 0 auto 24px;
     width: 100%;
     display: flex;
     justify-content: center;
@@ -4418,11 +4428,23 @@ p.section-kicker::after {
   }
 
   .about-image-card {
-    width: min(280px, 85vw);
-    height: min(280px, 85vw);
-    min-height: 240px;
+    width: min(330px, calc(100vw - 32px));
+    height: auto;
     aspect-ratio: 1 / 1;
+    min-height: unset;
+    max-width: 330px;
     margin: 0 auto;
+  }
+
+  .about-corner-stamp-bar {
+    bottom: 10px;
+    padding: 0 10px;
+  }
+
+  .about-corner-stamp {
+    font-size: 0.64rem;
+    padding: 4px 10px;
+    margin: 0 6px;
   }
 
   .about-lead {
@@ -4902,6 +4924,30 @@ p.section-kicker::after {
 
   .about-copy h2 {
     font-size: 1.18rem;
+  }
+
+  .about-image-wrap {
+    margin: 0 auto 20px;
+  }
+
+  .about-image-card {
+    width: min(290px, calc(100vw - 24px));
+    height: auto;
+    aspect-ratio: 1 / 1;
+    min-height: unset;
+    max-width: 290px;
+    margin: 0 auto;
+  }
+
+  .about-corner-stamp-bar {
+    bottom: 8px;
+    padding: 0 8px;
+  }
+
+  .about-corner-stamp {
+    font-size: 0.6rem;
+    padding: 3px 8px;
+    letter-spacing: 0.08em;
   }
 
   .capabilities-grid {
