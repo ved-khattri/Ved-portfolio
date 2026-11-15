@@ -884,56 +884,77 @@ hoverGalleries.forEach((gallery) => {
   });
 
   if (mascot) {
-    let petDistance = 0;
-    let lastPetX = null;
-    let lastPetY = null;
-    let hasPurredThisHover = false;
-    let purrTimeout = null;
+    let petMoves = [];
+    let isPetPurring = false;
+    let petPurrTimer = null;
+
+    const triggerPetPurr = () => {
+      if (isPetPurring || behaviorState === "dig_find") return;
+      isPetPurring = true;
+      mascot.classList.add("is-purring");
+      showMascotSpeech("purr purr~", 1400);
+
+      if (petPurrTimer) clearTimeout(petPurrTimer);
+      petPurrTimer = setTimeout(() => {
+        isPetPurring = false;
+        if (mascot) mascot.classList.remove("is-purring");
+        petMoves = [];
+      }, 1400);
+    };
 
     const handleMascotMouseMove = (e) => {
-      if (lastPetX !== null && lastPetY !== null) {
-        const dx = e.clientX - lastPetX;
-        const dy = e.clientY - lastPetY;
-        petDistance += Math.sqrt(dx * dx + dy * dy);
+      const now = performance.now();
+      petMoves.push({ x: e.clientX, y: e.clientY, time: now });
+      // Keep only movements from the last 550ms
+      petMoves = petMoves.filter((pt) => now - pt.time <= 550);
 
-        // When user strokes / pets the platypus back and forth:
-        if (petDistance > 45 && !hasPurredThisHover) {
-          hasPurredThisHover = true;
-          mascot.classList.add("is-purring");
-          showMascotSpeech("purr purr~ ♡", 1800);
-          if (purrTimeout) clearTimeout(purrTimeout);
-          purrTimeout = setTimeout(() => {
-            if (mascot) mascot.classList.remove("is-purring");
-          }, 1800);
+      if (petMoves.length < 4) return;
+
+      // Detect shake or petting movement: back-and-forth direction reversals + distance
+      let reversals = 0;
+      let totalDist = 0;
+      let lastDirX = 0;
+      let lastDirY = 0;
+
+      for (let i = 1; i < petMoves.length; i++) {
+        const dx = petMoves[i].x - petMoves[i - 1].x;
+        const dy = petMoves[i].y - petMoves[i - 1].y;
+        totalDist += Math.abs(dx) + Math.abs(dy);
+
+        if (Math.abs(dx) > 3) {
+          const dirX = Math.sign(dx);
+          if (lastDirX !== 0 && dirX !== lastDirX) {
+            reversals++;
+          }
+          lastDirX = dirX;
+        }
+        if (Math.abs(dy) > 3) {
+          const dirY = Math.sign(dy);
+          if (lastDirY !== 0 && dirY !== lastDirY) {
+            reversals++;
+          }
+          lastDirY = dirY;
         }
       }
-      lastPetX = e.clientX;
-      lastPetY = e.clientY;
+
+      // If user is shaking or stroking cursor over the mascot:
+      if (reversals >= 2 && totalDist >= 30) {
+        triggerPetPurr();
+      }
     };
 
     const setHover = () => {
       isMascotHovered = true;
       mascot.classList.remove("is-walking");
       mascot.classList.remove("is-running");
-      petDistance = 0;
-      lastPetX = null;
-      lastPetY = null;
-
-      // Random hint of petting (~35% chance on hover) so user gets the hint to pet him!
-      if (!hasPurredThisHover && behaviorState !== "dig_find" && Math.random() < 0.35) {
-        const petHints = ["*pet me?* ♡", "*scritch?*", "(pet!) ♡"];
-        const hint = petHints[Math.floor(Math.random() * petHints.length)];
-        showMascotSpeech(hint, 1300);
-      }
+      petMoves = [];
     };
 
     const clearHover = () => {
       isMascotHovered = false;
-      petDistance = 0;
-      lastPetX = null;
-      lastPetY = null;
-      hasPurredThisHover = false;
-      if (purrTimeout) clearTimeout(purrTimeout);
+      isPetPurring = false;
+      petMoves = [];
+      if (petPurrTimer) clearTimeout(petPurrTimer);
       if (mascot) mascot.classList.remove("is-purring");
     };
 
