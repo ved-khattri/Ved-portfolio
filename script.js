@@ -431,9 +431,7 @@ hoverGalleries.forEach((gallery) => {
         !mascot.classList.contains("is-falling") &&
         !mascot.classList.contains("is-angry")
       ) {
-        mascotBubbleText.textContent = mascot.classList.contains("is-docked")
-          ? "Cassette DJ ♫"
-          : "Vibing ♫";
+        mascotBubbleText.textContent = "Walking to the beat ♫";
       }
     }
 
@@ -453,6 +451,7 @@ hoverGalleries.forEach((gallery) => {
     if (deckCard) deckCard.classList.remove("is-playing");
     if (mascot) {
       mascot.classList.remove("is-playing");
+      mascot.classList.remove("is-walking");
       mascot.setAttribute("title", "Click to Play Lo-Fi Beats");
       if (
         mascotBubbleText &&
@@ -504,12 +503,113 @@ hoverGalleries.forEach((gallery) => {
     });
   }
 
-  // --- PLATYPUS SCROLL ATTITUDE & CASSETTE DOCKING ---
+  // --- WALKING PIXEL PLATYPUS COMPANION ENGINE ---
+  let mascotX = Math.max(20, window.innerWidth - 120);
+  let walkDirection = -1; // -1 = walking left, 1 = walking right
+  const walkSpeed = 46; // pixels per second (relaxed lo-fi waddle)
+  let isWalking = true;
+  let pauseDuration = 0;
+  let walkTimeBeforePause = 8 + Math.random() * 8; // walks for 8-16s then pauses to groove
+  let lastFrameTime = performance.now();
+
+  function updateMascotFacing() {
+    if (!mascot) return;
+    if (walkDirection === -1) {
+      mascot.classList.add("facing-left");
+    } else {
+      mascot.classList.remove("facing-left");
+    }
+  }
+  updateMascotFacing();
+
+  function mascotAnimationLoop(now) {
+    const dt = Math.min(0.1, (now - lastFrameTime) / 1000);
+    lastFrameTime = now;
+
+    if (mascot) {
+      const mascotWidth = mascot.offsetWidth || 68;
+      const minX = 14;
+      const maxX = Math.max(minX, window.innerWidth - mascotWidth - 14);
+
+      const isAlarmed =
+        mascot.classList.contains("is-falling") ||
+        mascot.classList.contains("is-angry");
+
+      if (isPlaying && !isAlarmed) {
+        if (isWalking) {
+          mascotX += walkDirection * walkSpeed * dt;
+          walkTimeBeforePause -= dt;
+
+          // Reached left edge
+          if (mascotX <= minX) {
+            mascotX = minX;
+            walkDirection = 1;
+            updateMascotFacing();
+            isWalking = false;
+            pauseDuration = 2 + Math.random() * 2;
+          }
+          // Reached right edge
+          else if (mascotX >= maxX) {
+            mascotX = maxX;
+            walkDirection = -1;
+            updateMascotFacing();
+            isWalking = false;
+            pauseDuration = 2 + Math.random() * 2;
+          }
+          // Mid-stroll groove pause
+          else if (walkTimeBeforePause <= 0) {
+            isWalking = false;
+            pauseDuration = 2.5 + Math.random() * 2.5;
+            walkTimeBeforePause = 10 + Math.random() * 10;
+          }
+
+          mascot.classList.add("is-walking");
+          if (
+            mascotBubbleText &&
+            !isAlarmed &&
+            mascotBubbleText.textContent !== "Walking to the beat ♫"
+          ) {
+            mascotBubbleText.textContent = "Walking to the beat ♫";
+          }
+        } else {
+          // Standing still, vibing / grooving in place
+          mascot.classList.remove("is-walking");
+          pauseDuration -= dt;
+          if (
+            mascotBubbleText &&
+            !isAlarmed &&
+            mascotBubbleText.textContent !== "Vibing ♫"
+          ) {
+            mascotBubbleText.textContent = "Vibing ♫";
+          }
+          if (pauseDuration <= 0) {
+            isWalking = true;
+          }
+        }
+      } else {
+        // Paused (taking a nap) or startled by scroll
+        mascot.classList.remove("is-walking");
+      }
+
+      // Clamp within screen bounds
+      if (mascotX < minX) mascotX = minX;
+      if (mascotX > maxX) mascotX = maxX;
+
+      // GPU accelerated translate3d
+      mascot.style.transform = `translate3d(${mascotX}px, 0, 0)`;
+    }
+
+    requestAnimationFrame(mascotAnimationLoop);
+  }
+
+  requestAnimationFrame(mascotAnimationLoop);
+
+  // --- PLATYPUS SCROLL ATTITUDE ---
   let lastScrollY = window.scrollY;
   let lastScrollTime = performance.now();
   let reactionTimer = null;
 
-  function updateMascotCompanion() {
+  function updateMascotScrollAttitude() {
     const currentScrollY = window.scrollY;
     const now = performance.now();
     const dt = Math.max(10, now - lastScrollTime);
@@ -519,46 +619,7 @@ hoverGalleries.forEach((gallery) => {
     lastScrollY = currentScrollY;
     lastScrollTime = now;
 
-    // 1. CASSETTE DOCKING CHECK AT PAGE BOTTOM
-    if (deckCard && mascot) {
-      const deckRect = deckCard.getBoundingClientRect();
-      const windowHeight = window.innerHeight;
-      const isCassetteVisible =
-        deckRect.top < windowHeight - 40 && deckRect.bottom > 60;
-      const isNearBottom =
-        windowHeight + currentScrollY >=
-        document.documentElement.scrollHeight - 700;
-
-      if (isCassetteVisible && isNearBottom) {
-        if (!mascot.classList.contains("is-docked")) {
-          mascot.classList.add("is-docked");
-          if (mascotBubbleText && isPlaying) {
-            mascotBubbleText.textContent = "Cassette DJ ♫";
-          }
-        }
-        const isMobile = window.innerWidth <= 768;
-        const topOffset = isMobile ? 44 : 52;
-        const leftOffset = isMobile ? 12 : 16;
-        mascot.style.position = "absolute";
-        mascot.style.top = `${deckRect.top + currentScrollY - topOffset}px`;
-        mascot.style.left = `${deckRect.left + window.scrollX + leftOffset}px`;
-        mascot.style.right = "auto";
-        mascot.style.bottom = "auto";
-        return; // While comfortably perched on cassette, skip fall/angry reactions
-      } else if (mascot.classList.contains("is-docked")) {
-        mascot.classList.remove("is-docked");
-        mascot.style.position = "";
-        mascot.style.top = "";
-        mascot.style.left = "";
-        mascot.style.right = "";
-        mascot.style.bottom = "";
-        if (mascotBubbleText) {
-          mascotBubbleText.textContent = isPlaying ? "Vibing ♫" : "Zzz...";
-        }
-      }
-    }
-
-    // 2. FAST SCROLL DOWN -> WORRIED & FALLING
+    // Fast scroll down -> worried & falling
     if (dy > 20 && velocity > 0.55) {
       if (reactionTimer) clearTimeout(reactionTimer);
       mascot.classList.remove("is-angry");
@@ -568,11 +629,15 @@ hoverGalleries.forEach((gallery) => {
       reactionTimer = setTimeout(() => {
         mascot.classList.remove("is-falling");
         if (mascotBubbleText) {
-          mascotBubbleText.textContent = isPlaying ? "Vibing ♫" : "Zzz...";
+          mascotBubbleText.textContent = isPlaying
+            ? isWalking
+              ? "Walking to the beat ♫"
+              : "Vibing ♫"
+            : "Zzz...";
         }
       }, 550);
     }
-    // 3. FAST SCROLL UP -> JUMPED UP & ANGRY ATTITUDE
+    // Fast scroll up -> jumped up & angry attitude
     else if (dy < -20 && velocity < -0.55) {
       if (reactionTimer) clearTimeout(reactionTimer);
       mascot.classList.remove("is-falling");
@@ -582,27 +647,30 @@ hoverGalleries.forEach((gallery) => {
       reactionTimer = setTimeout(() => {
         mascot.classList.remove("is-angry");
         if (mascotBubbleText) {
-          mascotBubbleText.textContent = isPlaying ? "Vibing ♫" : "Zzz...";
+          mascotBubbleText.textContent = isPlaying
+            ? isWalking
+              ? "Walking to the beat ♫"
+              : "Vibing ♫"
+            : "Zzz...";
         }
       }, 650);
     }
   }
 
-  window.addEventListener("scroll", updateMascotCompanion, { passive: true });
+  window.addEventListener("scroll", updateMascotScrollAttitude, {
+    passive: true,
+  });
   window.addEventListener("resize", () => {
-    if (mascot && mascot.classList.contains("is-docked") && deckCard) {
-      const deckRect = deckCard.getBoundingClientRect();
-      const isMobile = window.innerWidth <= 768;
-      const topOffset = isMobile ? 44 : 52;
-      const leftOffset = isMobile ? 12 : 16;
-      mascot.style.top = `${deckRect.top + window.scrollY - topOffset}px`;
-      mascot.style.left = `${deckRect.left + window.scrollX + leftOffset}px`;
+    if (mascot) {
+      const mascotWidth = mascot.offsetWidth || 68;
+      const maxX = Math.max(14, window.innerWidth - mascotWidth - 14);
+      if (mascotX > maxX) mascotX = maxX;
     }
   });
 
   if (typeof lenis !== "undefined" && lenis) {
     lenis.on("scroll", () => {
-      updateMascotCompanion();
+      updateMascotScrollAttitude();
     });
   }
 
