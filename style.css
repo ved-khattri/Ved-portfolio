@@ -3785,7 +3785,7 @@ p.section-kicker::after {
   }
 
   .nav-cta-pill {
-    display: inline-flex !important;
+    display: inline-flex;
     padding: 5px 12px;
     font-size: 0.76rem;
     letter-spacing: 0.06em;
@@ -3803,7 +3803,7 @@ p.section-kicker::after {
   }
 
   .navbar.scrolled .nav-cta-pill {
-    display: inline-flex !important;
+    display: inline-flex;
     padding: 4px 10px;
     font-size: 0.7rem;
   }
@@ -4242,7 +4242,10 @@ p.section-kicker::after {
     display: none;
   }
 
-  .nav-cta-pill {
+  .nav-cta-pill,
+  .navbar.scrolled .nav-cta-pill,
+  .navbar:not(.scrolled) .nav-cta-pill,
+  .navbar .nav-cta-pill {
     display: none !important;
   }
 
