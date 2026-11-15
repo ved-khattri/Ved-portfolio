@@ -886,31 +886,54 @@ hoverGalleries.forEach((gallery) => {
   if (mascot) {
     let petMoves = [];
     let isPetPurring = false;
-    let petPurrTimer = null;
+    let stopPurrTimer = null;
 
-    const triggerPetPurr = () => {
-      if (isPetPurring || behaviorState === "dig_find") return;
+    const stopPetPurr = () => {
+      isPetPurring = false;
+      petMoves = [];
+      if (stopPurrTimer) clearTimeout(stopPurrTimer);
+      if (mascot) {
+        mascot.classList.remove("is-purring");
+        mascot.classList.remove("is-speaking");
+      }
+      if (mascotSpeechText) mascotSpeechText.textContent = "";
+
+      // Immediately restore tooltip when shaking stops
+      if (isMascotHovered && mascotBubbleText) {
+        mascotBubbleText.textContent = isPlaying
+          ? "Lo-Fi Beats ♫ (Click to pause)"
+          : "Zzz... (Click to play)";
+      }
+    };
+
+    const startPetPurr = () => {
+      if (behaviorState === "dig_find") return;
       isPetPurring = true;
       mascot.classList.add("is-purring");
-      showMascotSpeech("purr purr~", 1400);
+      mascot.classList.add("is-speaking");
+      if (mascotSpeechText) mascotSpeechText.textContent = "purr purr~";
 
-      if (petPurrTimer) clearTimeout(petPurrTimer);
-      petPurrTimer = setTimeout(() => {
-        isPetPurring = false;
-        if (mascot) mascot.classList.remove("is-purring");
-        petMoves = [];
-      }, 1400);
+      // When stopped shaking for 200ms, immediately show the tooltip back!
+      if (stopPurrTimer) clearTimeout(stopPurrTimer);
+      stopPurrTimer = setTimeout(stopPetPurr, 200);
     };
 
     const handleMascotMouseMove = (e) => {
       const now = performance.now();
       petMoves.push({ x: e.clientX, y: e.clientY, time: now });
-      // Keep only movements from the last 550ms
-      petMoves = petMoves.filter((pt) => now - pt.time <= 550);
+      // Keep only movements from the last 500ms
+      petMoves = petMoves.filter((pt) => now - pt.time <= 500);
 
-      if (petMoves.length < 4) return;
+      if (isPetPurring) {
+        // While purring, keep purring as long as the user keeps shaking hard
+        if (stopPurrTimer) clearTimeout(stopPurrTimer);
+        stopPurrTimer = setTimeout(stopPetPurr, 200);
+        return;
+      }
 
-      // Detect shake or petting movement: back-and-forth direction reversals + distance
+      if (petMoves.length < 5) return;
+
+      // Detect vigorous shaking: at least 4 direction reversals + high distance in 500ms
       let reversals = 0;
       let totalDist = 0;
       let lastDirX = 0;
@@ -921,14 +944,14 @@ hoverGalleries.forEach((gallery) => {
         const dy = petMoves[i].y - petMoves[i - 1].y;
         totalDist += Math.abs(dx) + Math.abs(dy);
 
-        if (Math.abs(dx) > 3) {
+        if (Math.abs(dx) > 3.5) {
           const dirX = Math.sign(dx);
           if (lastDirX !== 0 && dirX !== lastDirX) {
             reversals++;
           }
           lastDirX = dirX;
         }
-        if (Math.abs(dy) > 3) {
+        if (Math.abs(dy) > 3.5) {
           const dirY = Math.sign(dy);
           if (lastDirY !== 0 && dirY !== lastDirY) {
             reversals++;
@@ -937,9 +960,9 @@ hoverGalleries.forEach((gallery) => {
         }
       }
 
-      // If user is shaking or stroking cursor over the mascot:
-      if (reversals >= 2 && totalDist >= 30) {
-        triggerPetPurr();
+      // User must shake very hard: 4+ rapid reversals and 85px+ travel distance
+      if (reversals >= 4 && totalDist >= 85) {
+        startPetPurr();
       }
     };
 
@@ -948,14 +971,22 @@ hoverGalleries.forEach((gallery) => {
       mascot.classList.remove("is-walking");
       mascot.classList.remove("is-running");
       petMoves = [];
+
+      // Randomly (~38% of hovers) the tooltip says "Pet me! ♡"
+      if (mascotBubbleText) {
+        if (Math.random() < 0.38) {
+          mascotBubbleText.textContent = "Pet me! ♡";
+        } else {
+          mascotBubbleText.textContent = isPlaying
+            ? "Lo-Fi Beats ♫ (Click to pause)"
+            : "Zzz... (Click to play)";
+        }
+      }
     };
 
     const clearHover = () => {
       isMascotHovered = false;
-      isPetPurring = false;
-      petMoves = [];
-      if (petPurrTimer) clearTimeout(petPurrTimer);
-      if (mascot) mascot.classList.remove("is-purring");
+      stopPetPurr();
     };
 
     mascot.addEventListener("mouseenter", setHover);
@@ -966,14 +997,16 @@ hoverGalleries.forEach((gallery) => {
     mascot.addEventListener("pointermove", handleMascotMouseMove);
 
     mascot.addEventListener("click", () => {
-      showMascotSpeech("Ah!");
+      stopPetPurr();
+      showMascotSpeech("Ah!", 1200);
       togglePlayState();
     });
 
     mascot.addEventListener("keydown", (e) => {
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
-        showMascotSpeech("Ah!");
+        stopPetPurr();
+        showMascotSpeech("Ah!", 1200);
         togglePlayState();
       }
     });

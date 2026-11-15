@@ -3933,8 +3933,8 @@ p.section-kicker::after {
   box-shadow: 1.5px 1.5px 0px rgba(66, 15, 2, 0.35);
   opacity: 0;
   transition:
-    opacity 0.16s ease,
-    transform 0.16s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+    opacity 0.1s ease,
+    transform 0.1s cubic-bezier(0.18, 0.89, 0.32, 1.28);
   z-index: 24;
 }
 
