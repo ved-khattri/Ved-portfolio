@@ -426,12 +426,8 @@ hoverGalleries.forEach((gallery) => {
     if (mascot) {
       mascot.classList.add("is-playing");
       mascot.setAttribute("title", "Click to Pause Lo-Fi Beats");
-      if (
-        mascotBubbleText &&
-        !mascot.classList.contains("is-falling") &&
-        !mascot.classList.contains("is-angry")
-      ) {
-        mascotBubbleText.textContent = "Walking to the beat ♫";
+      if (mascotBubbleText) {
+        mascotBubbleText.textContent = "Lo-Fi Beats ♫ (Click to pause)";
       }
     }
 
@@ -452,13 +448,10 @@ hoverGalleries.forEach((gallery) => {
     if (mascot) {
       mascot.classList.remove("is-playing");
       mascot.classList.remove("is-walking");
+      mascot.classList.remove("is-hopping");
       mascot.setAttribute("title", "Click to Play Lo-Fi Beats");
-      if (
-        mascotBubbleText &&
-        !mascot.classList.contains("is-falling") &&
-        !mascot.classList.contains("is-angry")
-      ) {
-        mascotBubbleText.textContent = "Zzz...";
+      if (mascotBubbleText) {
+        mascotBubbleText.textContent = "Zzz... (Click to play)";
       }
     }
 
@@ -490,27 +483,29 @@ hoverGalleries.forEach((gallery) => {
     });
   }
 
-  if (mascot) {
-    mascot.addEventListener("click", () => {
-      togglePlayState();
-    });
-
-    mascot.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        togglePlayState();
-      }
-    });
-  }
-
   // --- WALKING PIXEL PLATYPUS COMPANION ENGINE ---
-  let mascotX = Math.max(20, window.innerWidth - 120);
-  let walkDirection = -1; // -1 = walking left, 1 = walking right
-  const walkSpeed = 46; // pixels per second (relaxed lo-fi waddle)
-  let isWalking = true;
-  let pauseDuration = 0;
-  let walkTimeBeforePause = 8 + Math.random() * 8; // walks for 8-16s then pauses to groove
+  const STORAGE_KEY_X = "ved_platypus_x";
+  const STORAGE_KEY_DIR = "ved_platypus_dir";
+
+  let savedX = null;
+  let savedDir = null;
+  try {
+    savedX = sessionStorage.getItem(STORAGE_KEY_X);
+    savedDir = sessionStorage.getItem(STORAGE_KEY_DIR);
+  } catch (e) {}
+
+  let mascotX =
+    savedX !== null && !isNaN(parseFloat(savedX))
+      ? parseFloat(savedX)
+      : Math.max(20, window.innerWidth - 120);
+
+  let walkDirection = savedDir === "1" ? 1 : -1;
+  let currentSpeed = 44; // pixels per second
+  let behaviorState = "walk"; // "walk", "groove", "hop", "look_around"
+  let behaviorTimer = 2.5 + Math.random() * 3;
+  let hopTimer = null;
   let lastFrameTime = performance.now();
+  let lastSaveTime = 0;
 
   function updateMascotFacing() {
     if (!mascot) return;
@@ -521,6 +516,76 @@ hoverGalleries.forEach((gallery) => {
     }
   }
   updateMascotFacing();
+
+  function triggerJollyHop() {
+    if (!mascot) return;
+    mascot.classList.add("is-hopping");
+    if (hopTimer) clearTimeout(hopTimer);
+    hopTimer = setTimeout(() => {
+      mascot.classList.remove("is-hopping");
+    }, 550);
+  }
+
+  function pickNextBehavior(currentX, minX, maxX) {
+    // If close to left edge, turn right
+    if (currentX <= minX + 20) {
+      walkDirection = 1;
+      updateMascotFacing();
+      if (Math.random() < 0.4) {
+        behaviorState = "hop";
+        behaviorTimer = 0.6;
+        triggerJollyHop();
+      } else {
+        behaviorState = "walk";
+        behaviorTimer = 2.5 + Math.random() * 3.5;
+        currentSpeed = 38 + Math.random() * 16;
+      }
+      return;
+    }
+    // If close to right edge, turn left
+    if (currentX >= maxX - 20) {
+      walkDirection = -1;
+      updateMascotFacing();
+      if (Math.random() < 0.4) {
+        behaviorState = "hop";
+        behaviorTimer = 0.6;
+        triggerJollyHop();
+      } else {
+        behaviorState = "walk";
+        behaviorTimer = 2.5 + Math.random() * 3.5;
+        currentSpeed = 38 + Math.random() * 16;
+      }
+      return;
+    }
+
+    // Mid-screen random autonomous choices (non-linear wandering)
+    const roll = Math.random();
+    if (roll < 0.38) {
+      // 1. Walk in current direction (or 20% chance to turn around)
+      if (Math.random() < 0.22) {
+        walkDirection = -walkDirection;
+        updateMascotFacing();
+      }
+      behaviorState = "walk";
+      behaviorTimer = 2.0 + Math.random() * 4.0;
+      currentSpeed = 38 + Math.random() * 16;
+    } else if (roll < 0.65) {
+      // 2. Stop and groove to the lo-fi beats
+      behaviorState = "groove";
+      behaviorTimer = 2.0 + Math.random() * 3.0;
+    } else if (roll < 0.85) {
+      // 3. Jolly Little Hop in place!
+      behaviorState = "hop";
+      behaviorTimer = 0.65;
+      triggerJollyHop();
+    } else {
+      // 4. Look around curiously
+      behaviorState = "look_around";
+      behaviorTimer = 1.2;
+      walkDirection = -walkDirection;
+      updateMascotFacing();
+    }
+  }
 
   function mascotAnimationLoop(now) {
     const dt = Math.min(0.1, (now - lastFrameTime) / 1000);
@@ -536,59 +601,33 @@ hoverGalleries.forEach((gallery) => {
         mascot.classList.contains("is-angry");
 
       if (isPlaying && !isAlarmed) {
-        if (isWalking) {
-          mascotX += walkDirection * walkSpeed * dt;
-          walkTimeBeforePause -= dt;
+        behaviorTimer -= dt;
 
-          // Reached left edge
+        if (behaviorState === "walk") {
+          mascotX += walkDirection * currentSpeed * dt;
+          mascot.classList.add("is-walking");
+
+          // Collision with edges
           if (mascotX <= minX) {
             mascotX = minX;
-            walkDirection = 1;
-            updateMascotFacing();
-            isWalking = false;
-            pauseDuration = 2 + Math.random() * 2;
-          }
-          // Reached right edge
-          else if (mascotX >= maxX) {
+            pickNextBehavior(mascotX, minX, maxX);
+          } else if (mascotX >= maxX) {
             mascotX = maxX;
-            walkDirection = -1;
-            updateMascotFacing();
-            isWalking = false;
-            pauseDuration = 2 + Math.random() * 2;
-          }
-          // Mid-stroll groove pause
-          else if (walkTimeBeforePause <= 0) {
-            isWalking = false;
-            pauseDuration = 2.5 + Math.random() * 2.5;
-            walkTimeBeforePause = 10 + Math.random() * 10;
-          }
-
-          mascot.classList.add("is-walking");
-          if (
-            mascotBubbleText &&
-            !isAlarmed &&
-            mascotBubbleText.textContent !== "Walking to the beat ♫"
-          ) {
-            mascotBubbleText.textContent = "Walking to the beat ♫";
+            pickNextBehavior(mascotX, minX, maxX);
+          } else if (behaviorTimer <= 0) {
+            pickNextBehavior(mascotX, minX, maxX);
           }
         } else {
-          // Standing still, vibing / grooving in place
+          // Standing, grooving, hopping, or looking around
           mascot.classList.remove("is-walking");
-          pauseDuration -= dt;
-          if (
-            mascotBubbleText &&
-            !isAlarmed &&
-            mascotBubbleText.textContent !== "Vibing ♫"
-          ) {
-            mascotBubbleText.textContent = "Vibing ♫";
-          }
-          if (pauseDuration <= 0) {
-            isWalking = true;
+          if (behaviorTimer <= 0) {
+            pickNextBehavior(mascotX, minX, maxX);
           }
         }
       } else {
-        // Paused (taking a nap) or startled by scroll
+        // Audio paused (taking a nap) or startled by scroll
         mascot.classList.remove("is-walking");
+        mascot.classList.remove("is-hopping");
       }
 
       // Clamp within screen bounds
@@ -597,12 +636,47 @@ hoverGalleries.forEach((gallery) => {
 
       // GPU accelerated translate3d
       mascot.style.transform = `translate3d(${mascotX}px, 0, 0)`;
+
+      // Throttle save position to sessionStorage (every 400ms)
+      if (now - lastSaveTime > 400) {
+        lastSaveTime = now;
+        try {
+          sessionStorage.setItem(STORAGE_KEY_X, mascotX.toFixed(1));
+          sessionStorage.setItem(STORAGE_KEY_DIR, walkDirection.toString());
+        } catch (e) {}
+      }
     }
 
     requestAnimationFrame(mascotAnimationLoop);
   }
 
   requestAnimationFrame(mascotAnimationLoop);
+
+  window.addEventListener("beforeunload", () => {
+    try {
+      sessionStorage.setItem(STORAGE_KEY_X, mascotX.toFixed(1));
+      sessionStorage.setItem(STORAGE_KEY_DIR, walkDirection.toString());
+    } catch (e) {}
+  });
+
+  if (mascot) {
+    mascot.addEventListener("click", () => {
+      togglePlayState();
+      if (isPlaying) {
+        triggerJollyHop();
+      }
+    });
+
+    mascot.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        togglePlayState();
+        if (isPlaying) {
+          triggerJollyHop();
+        }
+      }
+    });
+  }
 
   // --- PLATYPUS SCROLL ATTITUDE ---
   let lastScrollY = window.scrollY;
@@ -623,37 +697,23 @@ hoverGalleries.forEach((gallery) => {
     if (dy > 20 && velocity > 0.55) {
       if (reactionTimer) clearTimeout(reactionTimer);
       mascot.classList.remove("is-angry");
+      mascot.classList.remove("is-hopping");
       mascot.classList.add("is-falling");
-      if (mascotBubbleText) mascotBubbleText.textContent = "WHOA! 💧";
 
       reactionTimer = setTimeout(() => {
         mascot.classList.remove("is-falling");
-        if (mascotBubbleText) {
-          mascotBubbleText.textContent = isPlaying
-            ? isWalking
-              ? "Walking to the beat ♫"
-              : "Vibing ♫"
-            : "Zzz...";
-        }
       }, 550);
     }
-    // Fast scroll up -> jumped up & angry attitude
+    // Fast scroll up -> high jolly leap & attitude
     else if (dy < -20 && velocity < -0.55) {
       if (reactionTimer) clearTimeout(reactionTimer);
       mascot.classList.remove("is-falling");
+      mascot.classList.remove("is-hopping");
       mascot.classList.add("is-angry");
-      if (mascotBubbleText) mascotBubbleText.textContent = "HEY! 💢";
 
       reactionTimer = setTimeout(() => {
         mascot.classList.remove("is-angry");
-        if (mascotBubbleText) {
-          mascotBubbleText.textContent = isPlaying
-            ? isWalking
-              ? "Walking to the beat ♫"
-              : "Vibing ♫"
-            : "Zzz...";
-        }
-      }, 650);
+      }, 700);
     }
   }
 

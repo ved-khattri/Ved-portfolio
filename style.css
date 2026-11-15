@@ -3253,22 +3253,99 @@ p.section-kicker::after {
   display: none !important;
 }
 
-/* ATTITUDE REACTION: SCROLL UP / JUMPED UP ANGRY */
+/* ATTITUDE REACTION: SCROLL UP / HIGH JOLLY LEAP */
 .mascot-platypus.is-angry .mascot-sprite-wrap {
-  transform: translateY(-24px) rotate(-10deg) !important;
-  animation: platypus-angry-jerk 0.28s ease-in-out infinite alternate !important;
+  animation: platypus-high-jump 0.65s cubic-bezier(0.22, 1, 0.36, 1) !important;
 }
 
 .mascot-platypus.facing-left.is-angry .mascot-sprite-wrap {
-  transform: scaleX(-1) translateY(-24px) rotate(-10deg) !important;
+  animation: platypus-high-jump-flipped 0.65s cubic-bezier(0.22, 1, 0.36, 1) !important;
 }
 
-@keyframes platypus-angry-jerk {
+@keyframes platypus-high-jump {
   0% {
-    transform: translateY(-22px) rotate(-8deg);
+    transform: translateY(0) scale(1.15, 0.85);
+  }
+  25% {
+    transform: translateY(-68px) scale(0.88, 1.15) rotate(-6deg);
+  }
+  50% {
+    transform: translateY(-76px) scale(1, 1) rotate(4deg);
+  }
+  75% {
+    transform: translateY(-10px) scale(0.95, 1.05);
+  }
+  90% {
+    transform: translateY(2px) scale(1.1, 0.9);
   }
   100% {
-    transform: translateY(-26px) rotate(-12deg);
+    transform: translateY(0) scale(1, 1);
+  }
+}
+
+@keyframes platypus-high-jump-flipped {
+  0% {
+    transform: scaleX(-1) translateY(0) scale(1.15, 0.85);
+  }
+  25% {
+    transform: scaleX(-1) translateY(-68px) scale(0.88, 1.15) rotate(-6deg);
+  }
+  50% {
+    transform: scaleX(-1) translateY(-76px) scale(1, 1) rotate(4deg);
+  }
+  75% {
+    transform: scaleX(-1) translateY(-10px) scale(0.95, 1.05);
+  }
+  90% {
+    transform: scaleX(-1) translateY(2px) scale(1.1, 0.9);
+  }
+  100% {
+    transform: scaleX(-1) translateY(0) scale(1, 1);
+  }
+}
+
+/* AUTONOMOUS JOLLY HOP WHILE ROAMING */
+.mascot-platypus.is-hopping .mascot-sprite-wrap {
+  animation: platypus-jolly-hop 0.5s cubic-bezier(0.25, 1, 0.5, 1) !important;
+}
+
+.mascot-platypus.facing-left.is-hopping .mascot-sprite-wrap {
+  animation: platypus-jolly-hop-flipped 0.5s cubic-bezier(0.25, 1, 0.5, 1) !important;
+}
+
+@keyframes platypus-jolly-hop {
+  0% {
+    transform: translateY(0) scale(1.12, 0.88);
+  }
+  40% {
+    transform: translateY(-38px) scale(0.92, 1.1) rotate(4deg);
+  }
+  70% {
+    transform: translateY(-4px) scale(1, 1) rotate(-2deg);
+  }
+  85% {
+    transform: translateY(1px) scale(1.08, 0.92);
+  }
+  100% {
+    transform: translateY(0) scale(1, 1);
+  }
+}
+
+@keyframes platypus-jolly-hop-flipped {
+  0% {
+    transform: scaleX(-1) translateY(0) scale(1.12, 0.88);
+  }
+  40% {
+    transform: scaleX(-1) translateY(-38px) scale(0.92, 1.1) rotate(4deg);
+  }
+  70% {
+    transform: scaleX(-1) translateY(-4px) scale(1, 1) rotate(-2deg);
+  }
+  85% {
+    transform: scaleX(-1) translateY(1px) scale(1.08, 0.92);
+  }
+  100% {
+    transform: scaleX(-1) translateY(0) scale(1, 1);
   }
 }
 
@@ -3517,9 +3594,7 @@ p.section-kicker::after {
   transform: rotate(45deg);
 }
 
-.mascot-platypus:hover .mascot-bubble,
-.mascot-platypus.is-falling .mascot-bubble,
-.mascot-platypus.is-angry .mascot-bubble {
+.mascot-platypus:hover .mascot-bubble {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
 }
