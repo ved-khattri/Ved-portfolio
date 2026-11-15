@@ -896,9 +896,18 @@ hoverGalleries.forEach((gallery) => {
     let lastDirX = 0;
     let isPetPurring = false;
     let petAfterglowTimer = null;
+    let petStrokeDecayTimer = null;
 
     let autoPetBubbleTimer = null;
     let autoPetHideTimer = null;
+
+    let touchPetStrokeDist = 0;
+    let touchLastX = null;
+    let touchLastY = null;
+    let touchStrokeReversals = 0;
+    let touchLastDirX = 0;
+    let hasPettedOnTouch = false;
+    let suppressNextClick = false;
 
     const stopPetPurr = (immediate = false) => {
       petStrokeDist = 0;
@@ -906,6 +915,12 @@ hoverGalleries.forEach((gallery) => {
       lastPetY = null;
       strokeReversals = 0;
       lastDirX = 0;
+      touchPetStrokeDist = 0;
+      touchLastX = null;
+      touchLastY = null;
+      touchStrokeReversals = 0;
+      touchLastDirX = 0;
+      if (petStrokeDecayTimer) clearTimeout(petStrokeDecayTimer);
       if (petAfterglowTimer) clearTimeout(petAfterglowTimer);
 
       const finishStop = () => {
@@ -927,19 +942,24 @@ hoverGalleries.forEach((gallery) => {
       if (immediate) {
         finishStop();
       } else {
-        // Peaceful 1.8s purr afterglow: tooltip does NOT immediately reappear!
-        petAfterglowTimer = setTimeout(finishStop, 1800);
+        // Peaceful 1.6s purr afterglow: tooltip does NOT immediately reappear!
+        petAfterglowTimer = setTimeout(finishStop, 1600);
       }
     };
 
     const startPetPurr = () => {
       if (behaviorState === "dig_find") return;
       isPetPurring = true;
-      mascot.classList.add("is-purring");
-      showMascotSpeech('purr purr~ <span class="heart-pink">♡</span>', 2200);
-
-      // Reset any pending stop timer while petting continues
+      if (speechTimer) clearTimeout(speechTimer);
       if (petAfterglowTimer) clearTimeout(petAfterglowTimer);
+
+      mascot.classList.add("is-purring");
+      mascot.classList.add("is-speaking");
+      mascot.classList.remove("show-auto-bubble");
+
+      if (mascotSpeechText) {
+        mascotSpeechText.innerHTML = 'purr purr~ <span class="heart-pink">♡</span>';
+      }
     };
 
     const handleMascotMouseMove = (e) => {
@@ -947,33 +967,48 @@ hoverGalleries.forEach((gallery) => {
         const dx = e.clientX - lastPetX;
         const dy = e.clientY - lastPetY;
         const dist = Math.sqrt(dx * dx + dy * dy);
-        petStrokeDist += dist;
 
-        // Detect gentle back-and-forth direction reversals (natural petting)
-        if (Math.abs(dx) > 2) {
-          const dirX = Math.sign(dx);
-          if (lastDirX !== 0 && dirX !== lastDirX) {
-            strokeReversals++;
+        // Filter micro-jitters
+        if (dist > 1.8) {
+          petStrokeDist += dist;
+
+          // Detect gentle back-and-forth direction reversals (natural petting)
+          if (Math.abs(dx) > 3) {
+            const dirX = Math.sign(dx);
+            if (lastDirX !== 0 && dirX !== lastDirX) {
+              strokeReversals++;
+            }
+            lastDirX = dirX;
           }
-          lastDirX = dirX;
-        }
 
-        // Natural petting: gentle stroke back-and-forth (~35px with 1 reversal) or continuous 50px stroke
-        if ((strokeReversals >= 1 && petStrokeDist >= 35) || petStrokeDist >= 50) {
-          startPetPurr();
-          petStrokeDist = 0;
-          strokeReversals = 0;
+          // Intentional petting requirement:
+          // Must rub back-and-forth (at least 2 direction reversals and >= 65px stroke distance),
+          // or do a continuous deliberate stroke of >= 110px across the body.
+          // Slight hover drift (20-30px) will NEVER trigger this!
+          if ((strokeReversals >= 2 && petStrokeDist >= 65) || petStrokeDist >= 110) {
+            startPetPurr();
+            petStrokeDist = 0;
+            strokeReversals = 0;
+          }
         }
       }
+
       lastPetX = e.clientX;
       lastPetY = e.clientY;
 
-      // When cursor stops moving while purring, start the 1.8s calm afterglow
-      if (isPetPurring) {
+      if (!isPetPurring) {
+        // Decay stroke if cursor pauses without completing a pet stroke
+        if (petStrokeDecayTimer) clearTimeout(petStrokeDecayTimer);
+        petStrokeDecayTimer = setTimeout(() => {
+          petStrokeDist = 0;
+          strokeReversals = 0;
+        }, 450);
+      } else {
+        // While purring, keep purring active; if cursor stops moving, start afterglow
         if (petAfterglowTimer) clearTimeout(petAfterglowTimer);
         petAfterglowTimer = setTimeout(() => {
           stopPetPurr(false);
-        }, 350);
+        }, 400);
       }
     };
 
@@ -989,6 +1024,7 @@ hoverGalleries.forEach((gallery) => {
         !isMascotHovered &&
         mascot &&
         !mascot.classList.contains("is-speaking") &&
+        !mascot.classList.contains("is-purring") &&
         !mascot.classList.contains("is-falling") &&
         !mascot.classList.contains("is-angry") &&
         behaviorState !== "dig_find"
@@ -1002,7 +1038,7 @@ hoverGalleries.forEach((gallery) => {
         autoPetHideTimer = setTimeout(() => {
           if (mascot) mascot.classList.remove("show-auto-bubble");
           setTimeout(() => {
-            if (!isMascotHovered && mascotBubbleText) {
+            if (!isMascotHovered && mascotBubbleText && !isPetPurring) {
               mascotBubbleText.textContent = isPlaying
                 ? "Lo-Fi Beats ♫ (Click to pause)"
                 : "Zzz... (Click to play)";
@@ -1030,7 +1066,7 @@ hoverGalleries.forEach((gallery) => {
       strokeReversals = 0;
       lastDirX = 0;
 
-      // On hover, show current music state
+      // On hover, show current music state if not already purring
       if (mascotBubbleText && !isPetPurring) {
         mascotBubbleText.textContent = isPlaying
           ? "Lo-Fi Beats ♫ (Click to pause)"
@@ -1044,14 +1080,115 @@ hoverGalleries.forEach((gallery) => {
       scheduleNextAutoPetBubble();
     };
 
+    // Clean desktop mouse listeners (no duplicate pointer events!)
     mascot.addEventListener("mouseenter", setHover);
-    mascot.addEventListener("pointerenter", setHover);
     mascot.addEventListener("mouseleave", clearHover);
-    mascot.addEventListener("pointerleave", clearHover);
     mascot.addEventListener("mousemove", handleMascotMouseMove);
-    mascot.addEventListener("pointermove", handleMascotMouseMove);
 
-    mascot.addEventListener("click", () => {
+    // Mobile & Tablet Touch Support (petting & tap handling)
+    mascot.addEventListener(
+      "touchstart",
+      (e) => {
+        if (e.touches.length === 1) {
+          const touch = e.touches[0];
+          touchLastX = touch.clientX;
+          touchLastY = touch.clientY;
+          touchPetStrokeDist = 0;
+          touchStrokeReversals = 0;
+          touchLastDirX = 0;
+          hasPettedOnTouch = false;
+          suppressNextClick = false;
+
+          mascot.classList.remove("show-auto-bubble");
+          if (autoPetHideTimer) clearTimeout(autoPetHideTimer);
+        }
+      },
+      { passive: true }
+    );
+
+    mascot.addEventListener(
+      "touchmove",
+      (e) => {
+        if (e.touches.length === 1) {
+          const touch = e.touches[0];
+          if (touchLastX !== null && touchLastY !== null) {
+            const dx = touch.clientX - touchLastX;
+            const dy = touch.clientY - touchLastY;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist > 1.8) {
+              touchPetStrokeDist += dist;
+
+              if (Math.abs(dx) > 3) {
+                const dirX = Math.sign(dx);
+                if (touchLastDirX !== 0 && dirX !== touchLastDirX) {
+                  touchStrokeReversals++;
+                }
+                touchLastDirX = dirX;
+              }
+
+              // On touch screens, petting rub (1 reversal + 32px or 52px total stroke)
+              if (
+                (touchStrokeReversals >= 1 && touchPetStrokeDist >= 32) ||
+                touchPetStrokeDist >= 52
+              ) {
+                startPetPurr();
+                hasPettedOnTouch = true;
+                suppressNextClick = true;
+                touchPetStrokeDist = 0;
+                touchStrokeReversals = 0;
+              }
+            }
+          }
+
+          touchLastX = touch.clientX;
+          touchLastY = touch.clientY;
+
+          // Prevent page scroll when petting
+          if (e.cancelable && (hasPettedOnTouch || touchPetStrokeDist > 8)) {
+            e.preventDefault();
+          }
+        }
+      },
+      { passive: false }
+    );
+
+    mascot.addEventListener(
+      "touchend",
+      () => {
+        if (hasPettedOnTouch) {
+          // Finished petting on touch: run gentle afterglow
+          if (petAfterglowTimer) clearTimeout(petAfterglowTimer);
+          petAfterglowTimer = setTimeout(() => {
+            stopPetPurr(false);
+          }, 1500);
+
+          setTimeout(() => {
+            suppressNextClick = false;
+          }, 450);
+        } else {
+          stopPetPurr(true);
+        }
+      },
+      { passive: true }
+    );
+
+    mascot.addEventListener(
+      "touchcancel",
+      () => {
+        stopPetPurr(true);
+        suppressNextClick = false;
+      },
+      { passive: true }
+    );
+
+    mascot.addEventListener("click", (e) => {
+      if (suppressNextClick) {
+        e.preventDefault();
+        e.stopPropagation();
+        suppressNextClick = false;
+        return;
+      }
       stopPetPurr(true);
       showMascotSpeech("Ah!", 1200);
       togglePlayState();

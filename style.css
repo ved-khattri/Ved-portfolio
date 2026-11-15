@@ -3033,10 +3033,25 @@ p.section-kicker::after {
   height: 68px;
   z-index: 920;
   cursor: pointer;
+  -webkit-user-select: none;
   user-select: none;
-  touch-action: manipulation;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent !important;
+  outline: none !important;
+  -webkit-touch-callout: none;
   filter: drop-shadow(0 6px 14px rgba(115, 28, 3, 0.28));
   will-change: transform;
+}
+
+.mascot-platypus,
+.mascot-platypus *,
+.mascot-platypus:focus,
+.mascot-platypus:focus-visible,
+.mascot-platypus:active,
+.mascot-platypus:hover {
+  -webkit-tap-highlight-color: transparent !important;
+  outline: none !important;
+  -webkit-focus-ring-color: transparent !important;
 }
 
 .mascot-inner {
@@ -3952,15 +3967,17 @@ p.section-kicker::after {
   transform: rotate(45deg);
 }
 
-.mascot-platypus:hover:not(.is-speaking) .mascot-bubble,
-.mascot-platypus.show-auto-bubble:not(.is-speaking) .mascot-bubble {
+.mascot-platypus:hover:not(.is-speaking):not(.is-purring) .mascot-bubble,
+.mascot-platypus.show-auto-bubble:not(.is-speaking):not(.is-purring) .mascot-bubble {
   opacity: 1;
   transform: translateX(-50%) translateY(0) scale(1);
 }
 
-.mascot-platypus.is-speaking .mascot-bubble {
+.mascot-platypus.is-speaking .mascot-bubble,
+.mascot-platypus.is-purring .mascot-bubble {
   opacity: 0 !important;
-  transform: translateX(-50%) translateY(3px) scale(0.92);
+  pointer-events: none !important;
+  transform: translateX(-50%) translateY(3px) scale(0.92) !important;
 }
 
 /* GLOWING PINK HEART */
@@ -4023,9 +4040,10 @@ p.section-kicker::after {
   display: none !important;
 }
 
-.mascot-platypus.is-speaking .mascot-speech-bubble {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
+.mascot-platypus.is-speaking .mascot-speech-bubble,
+.mascot-platypus.is-purring .mascot-speech-bubble {
+  opacity: 1 !important;
+  transform: translateX(-50%) translateY(0) !important;
   animation: speechPop 0.22s cubic-bezier(0.18, 0.89, 0.32, 1.28);
 }
 
