@@ -587,63 +587,114 @@ hoverGalleries.forEach((gallery) => {
     }
   }
 
+  // --- CASSETTE DOCKING (SITTING ON TOP-LEFT AT BOTTOM) ---
+  let isDockedOnCassette = false;
+  let undockTimer = null;
+
+  function updateMascotDocking() {
+    if (!deckCard || !mascot) return false;
+
+    const deckRect = deckCard.getBoundingClientRect();
+    const windowHeight = window.innerHeight;
+    const isCassetteVisible =
+      deckRect.top < windowHeight - 40 && deckRect.bottom > 60;
+    const isAtBottom =
+      windowHeight + window.scrollY >=
+      document.documentElement.scrollHeight - 380;
+
+    if (isCassetteVisible && isAtBottom) {
+      if (!isDockedOnCassette) {
+        isDockedOnCassette = true;
+        mascot.classList.add("is-docked");
+        mascot.classList.remove("facing-left");
+        mascot.classList.remove("is-walking");
+        mascot.classList.remove("is-hopping");
+        if (undockTimer) clearTimeout(undockTimer);
+      }
+
+      // Exact pixel coordinates resting on top-left of the red cassette casing
+      const targetViewportX = deckRect.left + 22;
+      const targetViewportY = deckRect.top - 24;
+      const mascotH = mascot.offsetHeight || 68;
+      const baseY = windowHeight - 12 - mascotH;
+      const transY = targetViewportY - baseY;
+
+      mascot.style.transform = `translate3d(${targetViewportX}px, ${transY}px, 0)`;
+      return true;
+    } else if (isDockedOnCassette) {
+      isDockedOnCassette = false;
+      mascot.classList.remove("is-docked");
+      mascot.classList.add("is-undocking");
+      if (undockTimer) clearTimeout(undockTimer);
+      undockTimer = setTimeout(() => {
+        mascot.classList.remove("is-undocking");
+      }, 420);
+    }
+
+    return false;
+  }
+
   function mascotAnimationLoop(now) {
     const dt = Math.min(0.1, (now - lastFrameTime) / 1000);
     lastFrameTime = now;
 
     if (mascot) {
-      const mascotWidth = mascot.offsetWidth || 68;
-      const minX = 14;
-      const maxX = Math.max(minX, window.innerWidth - mascotWidth - 14);
+      const isDocked = updateMascotDocking();
 
-      const isAlarmed =
-        mascot.classList.contains("is-falling") ||
-        mascot.classList.contains("is-angry");
+      if (!isDocked) {
+        const mascotWidth = mascot.offsetWidth || 68;
+        const minX = 14;
+        const maxX = Math.max(minX, window.innerWidth - mascotWidth - 14);
 
-      if (isPlaying && !isAlarmed) {
-        behaviorTimer -= dt;
+        const isAlarmed =
+          mascot.classList.contains("is-falling") ||
+          mascot.classList.contains("is-angry");
 
-        if (behaviorState === "walk") {
-          mascotX += walkDirection * currentSpeed * dt;
-          mascot.classList.add("is-walking");
+        if (isPlaying && !isAlarmed) {
+          behaviorTimer -= dt;
 
-          // Collision with edges
-          if (mascotX <= minX) {
-            mascotX = minX;
-            pickNextBehavior(mascotX, minX, maxX);
-          } else if (mascotX >= maxX) {
-            mascotX = maxX;
-            pickNextBehavior(mascotX, minX, maxX);
-          } else if (behaviorTimer <= 0) {
-            pickNextBehavior(mascotX, minX, maxX);
+          if (behaviorState === "walk") {
+            mascotX += walkDirection * currentSpeed * dt;
+            mascot.classList.add("is-walking");
+
+            // Collision with edges
+            if (mascotX <= minX) {
+              mascotX = minX;
+              pickNextBehavior(mascotX, minX, maxX);
+            } else if (mascotX >= maxX) {
+              mascotX = maxX;
+              pickNextBehavior(mascotX, minX, maxX);
+            } else if (behaviorTimer <= 0) {
+              pickNextBehavior(mascotX, minX, maxX);
+            }
+          } else {
+            // Standing, grooving, hopping, or looking around
+            mascot.classList.remove("is-walking");
+            if (behaviorTimer <= 0) {
+              pickNextBehavior(mascotX, minX, maxX);
+            }
           }
         } else {
-          // Standing, grooving, hopping, or looking around
+          // Audio paused (taking a nap) or startled by scroll
           mascot.classList.remove("is-walking");
-          if (behaviorTimer <= 0) {
-            pickNextBehavior(mascotX, minX, maxX);
-          }
+          mascot.classList.remove("is-hopping");
         }
-      } else {
-        // Audio paused (taking a nap) or startled by scroll
-        mascot.classList.remove("is-walking");
-        mascot.classList.remove("is-hopping");
-      }
 
-      // Clamp within screen bounds
-      if (mascotX < minX) mascotX = minX;
-      if (mascotX > maxX) mascotX = maxX;
+        // Clamp within screen bounds
+        if (mascotX < minX) mascotX = minX;
+        if (mascotX > maxX) mascotX = maxX;
 
-      // GPU accelerated translate3d
-      mascot.style.transform = `translate3d(${mascotX}px, 0, 0)`;
+        // GPU accelerated translate3d
+        mascot.style.transform = `translate3d(${mascotX}px, 0, 0)`;
 
-      // Throttle save position to sessionStorage (every 400ms)
-      if (now - lastSaveTime > 400) {
-        lastSaveTime = now;
-        try {
-          sessionStorage.setItem(STORAGE_KEY_X, mascotX.toFixed(1));
-          sessionStorage.setItem(STORAGE_KEY_DIR, walkDirection.toString());
-        } catch (e) {}
+        // Throttle save position to sessionStorage (every 400ms)
+        if (now - lastSaveTime > 400) {
+          lastSaveTime = now;
+          try {
+            sessionStorage.setItem(STORAGE_KEY_X, mascotX.toFixed(1));
+            sessionStorage.setItem(STORAGE_KEY_DIR, walkDirection.toString());
+          } catch (e) {}
+        }
       }
     }
 

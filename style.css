@@ -3368,6 +3368,32 @@ p.section-kicker::after {
   display: none !important;
 }
 
+/* DOCKED ON CASSETTE (FOOTER SITTING STATE) */
+.mascot-platypus.is-docked {
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.45)) !important;
+}
+
+.mascot-platypus.is-undocking {
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.mascot-platypus.is-docked .mascot-sprite-wrap {
+  animation: platypus-docked-vibe 2.4s ease-in-out infinite alternate !important;
+}
+
+@keyframes platypus-docked-vibe {
+  0% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-2px) rotate(1deg);
+  }
+  100% {
+    transform: translateY(1px) rotate(-0.5deg);
+  }
+}
+
 /* PARTICLES CONTAINER */
 .mascot-particles {
   position: absolute;
