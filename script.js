@@ -386,7 +386,21 @@ hoverGalleries.forEach((gallery) => {
   const deckCard = document.getElementById("cassette-deck-card");
   const cassetteAudio = document.getElementById("cassette-audio-element");
   const mascot = document.getElementById("mascot-platypus");
-  const mascotBubbleText = document.getElementById("mascot-bubble-text");
+  const mascotSpeechBubble = document.getElementById("mascot-speech-bubble");
+  const mascotSpeechText = document.getElementById("mascot-speech-text");
+  let speechTimer = null;
+  let isMascotHovered = false;
+
+  function showMascotSpeech(text, duration = 1400) {
+    if (!mascotSpeechText || !mascot) return;
+    mascotSpeechText.textContent = text;
+    mascot.classList.add("is-speaking");
+    if (speechTimer) clearTimeout(speechTimer);
+    speechTimer = setTimeout(() => {
+      if (mascot) mascot.classList.remove("is-speaking");
+      if (mascotSpeechText) mascotSpeechText.textContent = "purr purr~";
+    }, duration);
+  }
 
   const playlist = [
     "assets/audio/purpose_is_glorious.mp3",
@@ -428,10 +442,6 @@ hoverGalleries.forEach((gallery) => {
     if (deckCard) deckCard.classList.add("is-playing");
     if (mascot) {
       mascot.classList.add("is-playing");
-      mascot.setAttribute("title", "Click to Pause Lo-Fi Beats");
-      if (mascotBubbleText) {
-        mascotBubbleText.textContent = "Lo-Fi Beats ♫ (Click to pause)";
-      }
     }
 
     if (cassetteAudio) {
@@ -452,10 +462,6 @@ hoverGalleries.forEach((gallery) => {
       mascot.classList.remove("is-playing");
       mascot.classList.remove("is-walking");
       mascot.classList.remove("is-hopping");
-      mascot.setAttribute("title", "Click to Play Lo-Fi Beats");
-      if (mascotBubbleText) {
-        mascotBubbleText.textContent = "Zzz... (Click to play)";
-      }
     }
 
     if (cassetteAudio) {
@@ -535,6 +541,44 @@ hoverGalleries.forEach((gallery) => {
     mascot.classList.remove("is-jamming");
     mascot.classList.remove("is-hopping");
     mascot.classList.remove("is-sniffing");
+    mascot.classList.remove("is-digging");
+    mascot.classList.remove("is-found-cd");
+    mascot.classList.remove("is-eating-cd");
+  }
+
+  let sniffCount = 0;
+  let easterEggTimer = null;
+
+  function startDiggingEasterEgg() {
+    behaviorState = "dig_find";
+    clearSpecialBehaviors();
+    mascot.classList.remove("is-walking");
+    mascot.classList.add("is-digging");
+    showMascotSpeech("*dig dig!*", 1400);
+
+    if (easterEggTimer) clearTimeout(easterEggTimer);
+    easterEggTimer = setTimeout(() => {
+      if (!mascot) return;
+      mascot.classList.remove("is-digging");
+      mascot.classList.add("is-found-cd");
+      showMascotSpeech("✦ CD! ✦", 1200);
+
+      easterEggTimer = setTimeout(() => {
+        if (!mascot) return;
+        mascot.classList.remove("is-found-cd");
+        mascot.classList.add("is-eating-cd");
+        showMascotSpeech("*nom nom!* ♫", 1300);
+
+        easterEggTimer = setTimeout(() => {
+          if (!mascot) return;
+          mascot.classList.remove("is-eating-cd");
+          triggerCornerHop();
+          behaviorState = "walk";
+          behaviorTimer = 2.5 + Math.random() * 2.5;
+          currentSpeed = 38 + Math.random() * 14;
+        }, 1300);
+      }, 1200);
+    }, 1400);
   }
 
   function pickNextBehavior(currentX, minX, maxX) {
@@ -594,10 +638,16 @@ hoverGalleries.forEach((gallery) => {
       mascot.classList.add("is-jamming");
     } else {
       // 4. Curious Search & Sniff Action
-      behaviorState = "sniff";
-      behaviorTimer = 3.0 + Math.random() * 0.6;
-      sniffTurned = false;
-      mascot.classList.add("is-sniffing");
+      sniffCount++;
+      if (sniffCount >= 6) {
+        sniffCount = 0;
+        startDiggingEasterEgg();
+      } else {
+        behaviorState = "sniff";
+        behaviorTimer = 3.0 + Math.random() * 0.6;
+        sniffTurned = false;
+        mascot.classList.add("is-sniffing");
+      }
     }
   }
 
@@ -713,7 +763,7 @@ hoverGalleries.forEach((gallery) => {
           mascot.classList.contains("is-falling") ||
           mascot.classList.contains("is-angry");
 
-        if (isPlaying && !isAlarmed) {
+        if (isPlaying && !isAlarmed && !isMascotHovered && behaviorState !== "dig_find") {
           behaviorTimer -= dt;
 
           if (behaviorState === "walk") {
@@ -751,6 +801,10 @@ hoverGalleries.forEach((gallery) => {
               pickNextBehavior(mascotX, minX, maxX);
             }
           }
+        } else if (isMascotHovered) {
+          mascot.classList.remove("is-walking");
+        } else if (behaviorState === "dig_find") {
+          mascot.classList.remove("is-walking");
         } else {
           // Audio paused (taking a nap) or startled by scroll
           mascot.classList.remove("is-walking");
@@ -791,14 +845,24 @@ hoverGalleries.forEach((gallery) => {
 
   if (mascot) {
     mascot.addEventListener("click", () => {
+      showMascotSpeech("Ah!");
       togglePlayState();
     });
 
     mascot.addEventListener("keydown", (e) => {
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
+        showMascotSpeech("Ah!");
         togglePlayState();
       }
+    });
+
+    mascot.addEventListener("mouseenter", () => {
+      isMascotHovered = true;
+    });
+
+    mascot.addEventListener("mouseleave", () => {
+      isMascotHovered = false;
     });
   }
 

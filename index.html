@@ -1544,12 +1544,11 @@
       role="button"
       tabindex="0"
       aria-label="Platypus Companion - Click to Play or Pause Music"
-      title="Click to Pause Lo-Fi Beats"
     >
       <div class="mascot-inner">
-        <!---ATTITUDE / SPEECH BUBBLE--->
-        <div class="mascot-bubble" aria-hidden="true">
-          <span class="mascot-bubble-text" id="mascot-bubble-text">Lo-Fi Platypus ♫ (Click to pause)</span>
+        <!---REACTIVE SPEECH BUBBLE (PURR ON HOVER, AH ON CLICK, NOM NOM ON CD)--->
+        <div class="mascot-speech-bubble" id="mascot-speech-bubble" aria-hidden="true">
+          <span class="mascot-speech-text" id="mascot-speech-text">purr purr~</span>
         </div>
 
         <!---EMOTE PARTICLES CONTAINER--->
@@ -1595,6 +1594,27 @@
           <div class="mascot-sniff-label" aria-hidden="true">
             <span class="sniff-puff sniff-1">sniff...</span>
             <span class="sniff-puff sniff-2">sniff!</span>
+          </div>
+
+          <!---DIRT SPECKS (DIGGING EASTER EGG)--->
+          <div class="mascot-dig-dirt" aria-hidden="true">
+            <span class="dirt-speck d-1"></span>
+            <span class="dirt-speck d-2"></span>
+            <span class="dirt-speck d-3"></span>
+          </div>
+
+          <!---SHINY RETRO MINI-CD (DIGGING EASTER EGG)--->
+          <div class="mascot-found-cd" id="mascot-found-cd" aria-hidden="true">
+            <svg viewBox="0 0 16 16" class="cd-svg">
+              <circle cx="8" cy="8" r="7.5" fill="#2a0903" stroke="#f2c51b" stroke-width="0.8"/>
+              <circle cx="8" cy="8" r="6" fill="#1b120c"/>
+              <path d="M 3 5 A 6 6 0 0 1 13 5" fill="none" stroke="#38b6ff" stroke-width="1.2" opacity="0.85"/>
+              <path d="M 3 11 A 6 6 0 0 0 13 11" fill="none" stroke="#f2c51b" stroke-width="1.2" opacity="0.85"/>
+              <circle cx="8" cy="8" r="2.8" fill="#e08822"/>
+              <circle cx="8" cy="8" r="1.2" fill="#fffdf9"/>
+            </svg>
+            <span class="cd-sparkle s-1">&#10022;</span>
+            <span class="cd-sparkle s-2">&#10023;</span>
           </div>
         </div>
 
