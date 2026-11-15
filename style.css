@@ -3925,7 +3925,56 @@ p.section-kicker::after {
   }
 }
 
-/* REACTIVE FLOATING REACTION TEXT (PURR ON HOVER, AH ON CLICK, DIG / NOM NOM) */
+/* PLAY & PAUSE SONG TOOLTIP */
+.mascot-bubble {
+  position: absolute;
+  top: -24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(3px) scale(0.92);
+  background: var(--paper-light, #fffdf7);
+  border: 1.5px solid var(--deep-red);
+  border-radius: 6px;
+  padding: 2.5px 7px;
+  font-family: var(--font-secondary), monospace;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  color: var(--deep-red);
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 1.5px 1.5px 0px rgba(66, 15, 2, 0.35);
+  opacity: 0;
+  transition:
+    opacity 0.16s ease,
+    transform 0.16s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+  z-index: 24;
+}
+
+.mascot-bubble::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  margin-left: -3px;
+  width: 6px;
+  height: 6px;
+  background: var(--paper-light, #fffdf7);
+  border-right: 1.5px solid var(--deep-red);
+  border-bottom: 1.5px solid var(--deep-red);
+  transform: rotate(45deg);
+}
+
+.mascot-platypus:hover:not(.is-speaking) .mascot-bubble {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0) scale(1);
+}
+
+.mascot-platypus.is-speaking .mascot-bubble {
+  opacity: 0 !important;
+  transform: translateX(-50%) translateY(3px) scale(0.92);
+}
+
+/* REACTIVE FLOATING REACTION TEXT (PET PURR, AH ON CLICK, PET HINT, DIG / NOM NOM) */
 .mascot-speech-bubble {
   position: absolute;
   top: -14px;
@@ -3953,20 +4002,16 @@ p.section-kicker::after {
   transition:
     opacity 0.16s ease,
     transform 0.16s cubic-bezier(0.18, 0.89, 0.32, 1.28);
-  z-index: 20;
+  z-index: 25;
 }
 
 .mascot-speech-bubble::after {
   display: none !important;
 }
 
-.mascot-platypus:hover .mascot-speech-bubble,
 .mascot-platypus.is-speaking .mascot-speech-bubble {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
-}
-
-.mascot-platypus.is-speaking .mascot-speech-bubble {
   animation: speechPop 0.22s cubic-bezier(0.18, 0.89, 0.32, 1.28);
 }
 
@@ -3979,9 +4024,9 @@ p.section-kicker::after {
   }
 }
 
-/* PURR PURR HOVER REACTION & STOP MOVEMENT ON HOVER */
-.mascot-platypus:hover:not(.is-falling):not(.is-angry) .mascot-inner {
-  animation: platypus-purr 0.18s ease-in-out infinite alternate !important;
+/* PURR BODY VIBRATION (ONLY WHEN PETTED) & STOP MOVEMENT ON HOVER */
+.mascot-platypus.is-purring:not(.is-falling):not(.is-angry) .mascot-inner {
+  animation: platypus-purr 0.16s ease-in-out infinite alternate !important;
 }
 
 .mascot-platypus:hover .platypus-head,
@@ -4276,6 +4321,12 @@ p.section-kicker::after {
     bottom: 10px;
   }
 
+  .mascot-bubble {
+    font-size: 7.5px;
+    padding: 2px 5px;
+    top: -20px;
+  }
+
   .mascot-speech-bubble {
     font-size: 7.5px;
     padding: 0;
@@ -4288,6 +4339,12 @@ p.section-kicker::after {
     width: 52px;
     height: 52px;
     bottom: 8px;
+  }
+
+  .mascot-bubble {
+    font-size: 7px;
+    padding: 1.5px 4px;
+    top: -18px;
   }
 
   .mascot-speech-bubble {

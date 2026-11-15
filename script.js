@@ -386,6 +386,8 @@ hoverGalleries.forEach((gallery) => {
   const deckCard = document.getElementById("cassette-deck-card");
   const cassetteAudio = document.getElementById("cassette-audio-element");
   const mascot = document.getElementById("mascot-platypus");
+  const mascotBubble = document.getElementById("mascot-bubble");
+  const mascotBubbleText = document.getElementById("mascot-bubble-text");
   const mascotSpeechBubble = document.getElementById("mascot-speech-bubble");
   const mascotSpeechText = document.getElementById("mascot-speech-text");
   let speechTimer = null;
@@ -407,7 +409,7 @@ hoverGalleries.forEach((gallery) => {
     if (speechTimer) clearTimeout(speechTimer);
     speechTimer = setTimeout(() => {
       if (mascot) mascot.classList.remove("is-speaking");
-      if (mascotSpeechText) mascotSpeechText.textContent = "purr purr~";
+      if (mascotSpeechText) mascotSpeechText.textContent = "";
     }, duration);
   }
 
@@ -448,9 +450,16 @@ hoverGalleries.forEach((gallery) => {
 
   function playMusic() {
     isPlaying = true;
-    if (deckCard) deckCard.classList.add("is-playing");
+    if (deckCard) {
+      deckCard.classList.add("is-playing");
+      deckCard.setAttribute("title", "Click to Play / Pause Music");
+    }
     if (mascot) {
       mascot.classList.add("is-playing");
+      mascot.setAttribute("title", "Click to Pause Lo-Fi Beats");
+      if (mascotBubbleText) {
+        mascotBubbleText.textContent = "Lo-Fi Beats ♫ (Click to pause)";
+      }
     }
 
     if (cassetteAudio) {
@@ -466,11 +475,18 @@ hoverGalleries.forEach((gallery) => {
 
   function pauseMusic() {
     isPlaying = false;
-    if (deckCard) deckCard.classList.remove("is-playing");
+    if (deckCard) {
+      deckCard.classList.remove("is-playing");
+      deckCard.setAttribute("title", "Click to Play / Pause Music");
+    }
     if (mascot) {
       mascot.classList.remove("is-playing");
       mascot.classList.remove("is-walking");
       mascot.classList.remove("is-hopping");
+      mascot.setAttribute("title", "Click to Play Lo-Fi Beats");
+      if (mascotBubbleText) {
+        mascotBubbleText.textContent = "Zzz... (Click to play)";
+      }
     }
 
     if (cassetteAudio) {
@@ -868,19 +884,65 @@ hoverGalleries.forEach((gallery) => {
   });
 
   if (mascot) {
+    let petDistance = 0;
+    let lastPetX = null;
+    let lastPetY = null;
+    let hasPurredThisHover = false;
+    let purrTimeout = null;
+
+    const handleMascotMouseMove = (e) => {
+      if (lastPetX !== null && lastPetY !== null) {
+        const dx = e.clientX - lastPetX;
+        const dy = e.clientY - lastPetY;
+        petDistance += Math.sqrt(dx * dx + dy * dy);
+
+        // When user strokes / pets the platypus back and forth:
+        if (petDistance > 45 && !hasPurredThisHover) {
+          hasPurredThisHover = true;
+          mascot.classList.add("is-purring");
+          showMascotSpeech("purr purr~ ♡", 1800);
+          if (purrTimeout) clearTimeout(purrTimeout);
+          purrTimeout = setTimeout(() => {
+            if (mascot) mascot.classList.remove("is-purring");
+          }, 1800);
+        }
+      }
+      lastPetX = e.clientX;
+      lastPetY = e.clientY;
+    };
+
     const setHover = () => {
       isMascotHovered = true;
       mascot.classList.remove("is-walking");
       mascot.classList.remove("is-running");
+      petDistance = 0;
+      lastPetX = null;
+      lastPetY = null;
+
+      // Random hint of petting (~35% chance on hover) so user gets the hint to pet him!
+      if (!hasPurredThisHover && behaviorState !== "dig_find" && Math.random() < 0.35) {
+        const petHints = ["*pet me?* ♡", "*scritch?*", "(pet!) ♡"];
+        const hint = petHints[Math.floor(Math.random() * petHints.length)];
+        showMascotSpeech(hint, 1300);
+      }
     };
+
     const clearHover = () => {
       isMascotHovered = false;
+      petDistance = 0;
+      lastPetX = null;
+      lastPetY = null;
+      hasPurredThisHover = false;
+      if (purrTimeout) clearTimeout(purrTimeout);
+      if (mascot) mascot.classList.remove("is-purring");
     };
 
     mascot.addEventListener("mouseenter", setHover);
     mascot.addEventListener("pointerenter", setHover);
     mascot.addEventListener("mouseleave", clearHover);
     mascot.addEventListener("pointerleave", clearHover);
+    mascot.addEventListener("mousemove", handleMascotMouseMove);
+    mascot.addEventListener("pointermove", handleMascotMouseMove);
 
     mascot.addEventListener("click", () => {
       showMascotSpeech("Ah!");

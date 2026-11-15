@@ -1491,6 +1491,7 @@
                 role="button"
                 tabindex="0"
                 aria-label="Play or pause Creator's Mix Tape"
+                title="Click to Play / Pause Music"
               >
                 <div class="cassette-visual-frame">
                   <img
@@ -1543,11 +1544,17 @@
       role="button"
       tabindex="0"
       aria-label="Platypus Companion - Click to Play or Pause Music"
+      title="Click to Pause Lo-Fi Beats"
     >
       <div class="mascot-inner">
-        <!---REACTIVE SPEECH TEXT (PURR ON HOVER, AH ON CLICK, NOM NOM ON CD)--->
+        <!---PLAY & PAUSE SONG TOOLTIP--->
+        <div class="mascot-bubble" id="mascot-bubble" aria-hidden="true">
+          <span class="mascot-bubble-text" id="mascot-bubble-text">Lo-Fi Beats ♫ (Click to pause)</span>
+        </div>
+
+        <!---REACTIVE FLOATING REACTION TEXT (PET PURR, AH, DIG, NOM NOM)--->
         <div class="mascot-speech-bubble" id="mascot-speech-bubble" aria-hidden="true">
-          <span class="mascot-speech-text" id="mascot-speech-text">purr purr~</span>
+          <span class="mascot-speech-text" id="mascot-speech-text"></span>
         </div>
 
         <!---EMOTE PARTICLES CONTAINER--->
