@@ -8,7 +8,10 @@ let isScrolled = false;
 let ticking = false;
 
 function updateNavbar(scrollVal) {
-  const scrollY = typeof scrollVal === "number" ? scrollVal : (window.scrollY || window.pageYOffset || 0);
+  const scrollY =
+    typeof scrollVal === "number"
+      ? scrollVal
+      : window.scrollY || window.pageYOffset || 0;
 
   if (!isScrolled && scrollY > 50) {
     isScrolled = true;
@@ -581,18 +584,15 @@ hoverGalleries.forEach((gallery) => {
       behaviorTimer = 2.4 + Math.random() * 3.2;
       currentSpeed = 36 + Math.random() * 16;
     } else if (roll < 0.62) {
-      // 2. Curious Searching & Sniffing Action! (Frequent & prominently visible)
       behaviorState = "sniff";
       behaviorTimer = 3.2 + Math.random() * 0.8;
       sniffTurned = false;
       mascot.classList.add("is-sniffing");
     } else if (roll < 0.82) {
-      // 3. Headphone Jam & Fast Tail Wag (character action in place of random jump)
       behaviorState = "jam";
       behaviorTimer = 2.2 + Math.random() * 2.2;
       mascot.classList.add("is-jamming");
     } else {
-      // 4. Lo-Fi Beat Groove (stand still and vibe)
       behaviorState = "groove";
       behaviorTimer = 2.2 + Math.random() * 2.2;
     }
@@ -618,13 +618,11 @@ hoverGalleries.forEach((gallery) => {
       document.documentElement.scrollHeight - 380;
 
     if (isCassetteVisible && isAtBottom) {
-      // Exact coordinates of the red cassette casing within the visual frame
-      // Transparent padding of cassette_transparent.webp: 70px from top (out of 352px), 47px from left (out of 553px)
-      const cassetteLeftRim = tapeRect.left + Math.max(16, tapeRect.width * 0.12);
+      const cassetteLeftRim =
+        tapeRect.left + Math.max(16, tapeRect.width * 0.12);
       const cassetteTopRim = tapeRect.top + tapeRect.height * (70 / 352);
       const mascotH = mascot.offsetHeight || 68;
       const baseY = windowHeight - 12 - mascotH;
-      // Align feet directly on top of the red cassette ledge (raised by 9px from previous sunken position)
       const targetDockY = cassetteTopRim - 36 - baseY;
       const targetDockX = cassetteLeftRim;
 
@@ -632,7 +630,6 @@ hoverGalleries.forEach((gallery) => {
 
       if (!isDockedOnCassette) {
         if (Math.abs(distX) > 10) {
-          // STRICTLY NO FLYING LEAP: Run along the bottom plane towards the cassette!
           isApproachingCassette = true;
           clearSpecialBehaviors();
           mascot.classList.remove("is-docked");
