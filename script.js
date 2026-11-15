@@ -391,6 +391,15 @@ hoverGalleries.forEach((gallery) => {
   let speechTimer = null;
   let isMascotHovered = false;
 
+  function isHoveringMascot() {
+    if (!mascot) return false;
+    try {
+      return isMascotHovered || mascot.matches(":hover");
+    } catch (e) {
+      return isMascotHovered;
+    }
+  }
+
   function showMascotSpeech(text, duration = 1400) {
     if (!mascotSpeechText || !mascot) return;
     mascotSpeechText.textContent = text;
@@ -679,6 +688,18 @@ hoverGalleries.forEach((gallery) => {
       const targetDockY = cassetteTopRim - 36 - baseY;
       const targetDockX = cassetteLeftRim;
 
+      // Immediately freeze and stop if user is hovering the mascot
+      if (isHoveringMascot()) {
+        mascot.classList.remove("is-running");
+        mascot.classList.remove("is-walking");
+        if (isDockedOnCassette) {
+          mascot.style.transform = `translate3d(${targetDockX}px, ${targetDockY}px, 0)`;
+        } else {
+          mascot.style.transform = `translate3d(${mascotX}px, 0, 0)`;
+        }
+        return true;
+      }
+
       const distX = targetDockX - mascotX;
 
       if (!isDockedOnCassette) {
@@ -763,7 +784,9 @@ hoverGalleries.forEach((gallery) => {
           mascot.classList.contains("is-falling") ||
           mascot.classList.contains("is-angry");
 
-        if (isPlaying && !isAlarmed && !isMascotHovered && behaviorState !== "dig_find") {
+        const isHovered = isHoveringMascot();
+
+        if (isPlaying && !isAlarmed && !isHovered && behaviorState !== "dig_find") {
           behaviorTimer -= dt;
 
           if (behaviorState === "walk") {
@@ -801,8 +824,9 @@ hoverGalleries.forEach((gallery) => {
               pickNextBehavior(mascotX, minX, maxX);
             }
           }
-        } else if (isMascotHovered) {
+        } else if (isHovered) {
           mascot.classList.remove("is-walking");
+          mascot.classList.remove("is-running");
         } else if (behaviorState === "dig_find") {
           mascot.classList.remove("is-walking");
         } else {
@@ -844,6 +868,20 @@ hoverGalleries.forEach((gallery) => {
   });
 
   if (mascot) {
+    const setHover = () => {
+      isMascotHovered = true;
+      mascot.classList.remove("is-walking");
+      mascot.classList.remove("is-running");
+    };
+    const clearHover = () => {
+      isMascotHovered = false;
+    };
+
+    mascot.addEventListener("mouseenter", setHover);
+    mascot.addEventListener("pointerenter", setHover);
+    mascot.addEventListener("mouseleave", clearHover);
+    mascot.addEventListener("pointerleave", clearHover);
+
     mascot.addEventListener("click", () => {
       showMascotSpeech("Ah!");
       togglePlayState();
@@ -855,14 +893,6 @@ hoverGalleries.forEach((gallery) => {
         showMascotSpeech("Ah!");
         togglePlayState();
       }
-    });
-
-    mascot.addEventListener("mouseenter", () => {
-      isMascotHovered = true;
-    });
-
-    mascot.addEventListener("mouseleave", () => {
-      isMascotHovered = false;
     });
   }
 

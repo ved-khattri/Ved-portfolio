@@ -3925,16 +3925,16 @@ p.section-kicker::after {
   }
 }
 
-/* REACTIVE SPEECH BUBBLE (PURR ON HOVER, AH ON CLICK, NOM NOM ON CD) */
+/* REACTIVE FLOATING REACTION TEXT (PURR ON HOVER, AH ON CLICK, DIG / NOM NOM) */
 .mascot-speech-bubble {
   position: absolute;
-  top: -24px;
+  top: -14px;
   left: 50%;
-  transform: translateX(-50%) translateY(3px) scale(0.92);
-  background: var(--paper-light, #fffdf7);
-  border: 1.5px solid var(--deep-red);
-  border-radius: 6px;
-  padding: 2px 7px;
+  transform: translateX(-50%) translateY(2px);
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
   font-family: var(--font-secondary), monospace;
   font-size: 8.5px;
   font-weight: 800;
@@ -3943,7 +3943,12 @@ p.section-kicker::after {
   color: var(--deep-red);
   white-space: nowrap;
   pointer-events: none;
-  box-shadow: 1.5px 1.5px 0px rgba(66, 15, 2, 0.35);
+  box-shadow: none;
+  text-shadow:
+    1px 1px 0px rgba(255, 253, 249, 0.95),
+    -1px -1px 0px rgba(255, 253, 249, 0.95),
+    1px -1px 0px rgba(255, 253, 249, 0.95),
+    -1px 1px 0px rgba(255, 253, 249, 0.95);
   opacity: 0;
   transition:
     opacity 0.16s ease,
@@ -3952,23 +3957,13 @@ p.section-kicker::after {
 }
 
 .mascot-speech-bubble::after {
-  content: "";
-  position: absolute;
-  bottom: -4px;
-  left: 50%;
-  margin-left: -3px;
-  width: 6px;
-  height: 6px;
-  background: var(--paper-light, #fffdf7);
-  border-right: 1.5px solid var(--deep-red);
-  border-bottom: 1.5px solid var(--deep-red);
-  transform: rotate(45deg);
+  display: none !important;
 }
 
 .mascot-platypus:hover .mascot-speech-bubble,
 .mascot-platypus.is-speaking .mascot-speech-bubble {
   opacity: 1;
-  transform: translateX(-50%) translateY(0) scale(1);
+  transform: translateX(-50%) translateY(0);
 }
 
 .mascot-platypus.is-speaking .mascot-speech-bubble {
@@ -3977,16 +3972,24 @@ p.section-kicker::after {
 
 @keyframes speechPop {
   0% {
-    transform: translateX(-50%) translateY(3px) scale(0.85);
+    transform: translateX(-50%) translateY(3px) scale(0.9);
   }
   100% {
     transform: translateX(-50%) translateY(0) scale(1);
   }
 }
 
-/* PURR PURR HOVER REACTION */
+/* PURR PURR HOVER REACTION & STOP MOVEMENT ON HOVER */
 .mascot-platypus:hover:not(.is-falling):not(.is-angry) .mascot-inner {
   animation: platypus-purr 0.18s ease-in-out infinite alternate !important;
+}
+
+.mascot-platypus:hover .platypus-head,
+.mascot-platypus:hover .platypus-body,
+.mascot-platypus:hover .foot-front,
+.mascot-platypus:hover .foot-back,
+.mascot-platypus:hover .platypus-tail {
+  animation: none !important;
 }
 
 @keyframes platypus-purr {
@@ -4252,8 +4255,8 @@ p.section-kicker::after {
 
   .mascot-speech-bubble {
     font-size: 7.5px;
-    padding: 1.5px 5px;
-    top: -20px;
+    padding: 0;
+    top: -11px;
   }
 }
 
@@ -4266,8 +4269,8 @@ p.section-kicker::after {
 
   .mascot-speech-bubble {
     font-size: 7px;
-    padding: 1px 4px;
-    top: -18px;
+    padding: 0;
+    top: -10px;
   }
 }
 
