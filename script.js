@@ -622,8 +622,8 @@ hoverGalleries.forEach((gallery) => {
       const cassetteTopRim = tapeRect.top + tapeRect.height * (70 / 352);
       const mascotH = mascot.offsetHeight || 68;
       const baseY = windowHeight - 12 - mascotH;
-      // Mascot feet are ~60px down in container; align feet exactly on cassetteTopRim
-      const targetDockY = cassetteTopRim - 58 - baseY;
+      // Align feet directly onto the red cassette casing rim (no floating gap)
+      const targetDockY = cassetteTopRim - 27 - baseY;
       const targetDockX = cassetteLeftRim;
 
       const distX = targetDockX - mascotX;
