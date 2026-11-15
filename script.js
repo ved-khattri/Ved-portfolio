@@ -937,6 +937,7 @@ hoverGalleries.forEach((gallery) => {
             ? "Lo-Fi Beats ♫ (Click to pause)"
             : "Zzz... (Click to play)";
         }
+        scheduleNextAutoPetBubble(true);
       };
 
       if (immediate) {
@@ -1012,10 +1013,17 @@ hoverGalleries.forEach((gallery) => {
       }
     };
 
-    // --- AUTOMATIC RANDOM "PET ME! ♡" POPUP ---
-    function scheduleNextAutoPetBubble() {
+    // --- AUTOMATIC SPONTANEOUS "PET ME! ♡" POPUP ---
+    function scheduleNextAutoPetBubble(afterPet = false) {
       if (autoPetBubbleTimer) clearTimeout(autoPetBubbleTimer);
-      const delay = 14000 + Math.random() * 8000; // 14s to 22s
+      // Truly random spontaneous intervals:
+      // - After being petted: longer contented rest (45s - 90s)
+      // - Normal roaming: wide, unpredictable interval (24s - 68s)
+      const baseDelay = afterPet ? 45000 : 24000;
+      const randomJitter = afterPet
+        ? Math.random() * 45000
+        : Math.random() * 44000;
+      const delay = baseDelay + randomJitter;
       autoPetBubbleTimer = setTimeout(triggerAutoPetBubble, delay);
     }
 
@@ -1023,6 +1031,7 @@ hoverGalleries.forEach((gallery) => {
       if (
         !isMascotHovered &&
         mascot &&
+        isPlaying &&
         !mascot.classList.contains("is-speaking") &&
         !mascot.classList.contains("is-purring") &&
         !mascot.classList.contains("is-falling") &&
