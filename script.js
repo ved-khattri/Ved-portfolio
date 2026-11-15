@@ -517,7 +517,7 @@ hoverGalleries.forEach((gallery) => {
   }
   updateMascotFacing();
 
-  function triggerJollyHop() {
+  function triggerCornerHop() {
     if (!mascot) return;
     mascot.classList.add("is-hopping");
     if (hopTimer) clearTimeout(hopTimer);
@@ -526,109 +526,170 @@ hoverGalleries.forEach((gallery) => {
     }, 550);
   }
 
+  function clearSpecialBehaviors() {
+    if (!mascot) return;
+    mascot.classList.remove("is-jamming");
+    mascot.classList.remove("is-hopping");
+  }
+
   function pickNextBehavior(currentX, minX, maxX) {
-    // If close to left edge, turn right
-    if (currentX <= minX + 20) {
+    clearSpecialBehaviors();
+
+    // If close to left edge, turn right and corner hop
+    if (currentX <= minX + 16) {
       walkDirection = 1;
       updateMascotFacing();
-      if (Math.random() < 0.4) {
+      if (Math.random() < 0.5) {
         behaviorState = "hop";
-        behaviorTimer = 0.6;
-        triggerJollyHop();
+        behaviorTimer = 0.55;
+        triggerCornerHop();
       } else {
         behaviorState = "walk";
-        behaviorTimer = 2.5 + Math.random() * 3.5;
-        currentSpeed = 38 + Math.random() * 16;
-      }
-      return;
-    }
-    // If close to right edge, turn left
-    if (currentX >= maxX - 20) {
-      walkDirection = -1;
-      updateMascotFacing();
-      if (Math.random() < 0.4) {
-        behaviorState = "hop";
-        behaviorTimer = 0.6;
-        triggerJollyHop();
-      } else {
-        behaviorState = "walk";
-        behaviorTimer = 2.5 + Math.random() * 3.5;
-        currentSpeed = 38 + Math.random() * 16;
+        behaviorTimer = 2.5 + Math.random() * 3.0;
+        currentSpeed = 38 + Math.random() * 14;
       }
       return;
     }
 
-    // Mid-screen random autonomous choices (non-linear wandering)
+    // If close to right edge, turn left and corner hop
+    if (currentX >= maxX - 16) {
+      walkDirection = -1;
+      updateMascotFacing();
+      if (Math.random() < 0.5) {
+        behaviorState = "hop";
+        behaviorTimer = 0.55;
+        triggerCornerHop();
+      } else {
+        behaviorState = "walk";
+        behaviorTimer = 2.5 + Math.random() * 3.0;
+        currentSpeed = 38 + Math.random() * 14;
+      }
+      return;
+    }
+
+    // Mid-screen autonomous character actions (NO RANDOM JUMPS!)
     const roll = Math.random();
     if (roll < 0.38) {
-      // 1. Walk in current direction (or 20% chance to turn around)
-      if (Math.random() < 0.22) {
+      // 1. Casual Stroll (with slight chance to flip direction)
+      if (Math.random() < 0.2) {
         walkDirection = -walkDirection;
         updateMascotFacing();
       }
       behaviorState = "walk";
-      behaviorTimer = 2.0 + Math.random() * 4.0;
-      currentSpeed = 38 + Math.random() * 16;
+      behaviorTimer = 2.4 + Math.random() * 3.6;
+      currentSpeed = 36 + Math.random() * 16;
     } else if (roll < 0.65) {
-      // 2. Stop and groove to the lo-fi beats
+      // 2. Lo-Fi Beat Groove (stand still and vibe)
       behaviorState = "groove";
-      behaviorTimer = 2.0 + Math.random() * 3.0;
-    } else if (roll < 0.85) {
-      // 3. Jolly Little Hop in place!
-      behaviorState = "hop";
-      behaviorTimer = 0.65;
-      triggerJollyHop();
+      behaviorTimer = 2.2 + Math.random() * 2.8;
+    } else if (roll < 0.86) {
+      // 3. Headphone Jam & Fast Tail Wag (character action in place of random jump)
+      behaviorState = "jam";
+      behaviorTimer = 2.2 + Math.random() * 2.5;
+      mascot.classList.add("is-jamming");
     } else {
-      // 4. Look around curiously
+      // 4. Curious Sniff & Look Around
       behaviorState = "look_around";
-      behaviorTimer = 1.2;
+      behaviorTimer = 1.4;
       walkDirection = -walkDirection;
       updateMascotFacing();
     }
   }
 
-  // --- CASSETTE DOCKING (SITTING ON TOP-LEFT AT BOTTOM) ---
+  // --- CASSETTE RUNNING & DOCKING LOGIC ---
   let isDockedOnCassette = false;
-  let undockTimer = null;
+  let isApproachingCassette = false;
+  let pickUpTimer = null;
 
-  function updateMascotDocking() {
+  function updateMascotDocking(dt) {
     if (!deckCard || !mascot) return false;
 
-    const deckRect = deckCard.getBoundingClientRect();
+    const tapeImg = deckCard.querySelector(".cassette-tape-art") || deckCard;
+    const tapeRect = tapeImg.getBoundingClientRect();
     const windowHeight = window.innerHeight;
+
+    // Check visibility and scroll position
     const isCassetteVisible =
-      deckRect.top < windowHeight - 40 && deckRect.bottom > 60;
+      tapeRect.top < windowHeight - 20 && tapeRect.bottom > 60;
     const isAtBottom =
       windowHeight + window.scrollY >=
       document.documentElement.scrollHeight - 380;
 
     if (isCassetteVisible && isAtBottom) {
-      if (!isDockedOnCassette) {
-        isDockedOnCassette = true;
-        mascot.classList.add("is-docked");
-        mascot.classList.remove("facing-left");
-        mascot.classList.remove("is-walking");
-        mascot.classList.remove("is-hopping");
-        if (undockTimer) clearTimeout(undockTimer);
-      }
-
-      // Exact pixel coordinates resting on top-left of the red cassette casing
-      const targetViewportX = deckRect.left + 22;
-      const targetViewportY = deckRect.top - 24;
+      // Exact coordinates of the red cassette casing within the visual frame
+      // Transparent padding of cassette_transparent.webp: 70px from top (out of 352px), 47px from left (out of 553px)
+      const cassetteLeftRim = tapeRect.left + Math.max(16, tapeRect.width * 0.12);
+      const cassetteTopRim = tapeRect.top + tapeRect.height * (70 / 352);
       const mascotH = mascot.offsetHeight || 68;
       const baseY = windowHeight - 12 - mascotH;
-      const transY = targetViewportY - baseY;
+      // Mascot feet are ~60px down in container; align feet exactly on cassetteTopRim
+      const targetDockY = cassetteTopRim - 58 - baseY;
+      const targetDockX = cassetteLeftRim;
 
-      mascot.style.transform = `translate3d(${targetViewportX}px, ${transY}px, 0)`;
-      return true;
-    } else if (isDockedOnCassette) {
+      const distX = targetDockX - mascotX;
+
+      if (!isDockedOnCassette) {
+        if (Math.abs(distX) > 10) {
+          // STRICTLY NO FLYING LEAP: Run along the bottom plane towards the cassette!
+          isApproachingCassette = true;
+          clearSpecialBehaviors();
+          mascot.classList.remove("is-docked");
+          mascot.classList.add("is-running");
+          mascot.classList.add("is-walking");
+
+          walkDirection = distX > 0 ? 1 : -1;
+          updateMascotFacing();
+
+          const runSpeed = 135; // brisk waddle run (px/s)
+          mascotX += walkDirection * runSpeed * dt;
+          if (
+            (walkDirection === 1 && mascotX >= targetDockX) ||
+            (walkDirection === -1 && mascotX <= targetDockX)
+          ) {
+            mascotX = targetDockX;
+          }
+
+          // Stay on ground plane while running!
+          mascot.style.transform = `translate3d(${mascotX}px, 0, 0)`;
+          return true;
+        } else {
+          // Reached horizontal alignment: Step onto the cassette!
+          mascotX = targetDockX;
+          isApproachingCassette = false;
+          isDockedOnCassette = true;
+          clearSpecialBehaviors();
+          mascot.classList.remove("is-running");
+          mascot.classList.remove("is-walking");
+          mascot.classList.remove("facing-left");
+          mascot.classList.add("is-docked");
+        }
+      }
+
+      if (isDockedOnCassette) {
+        // Sit firmly on top-left rim of the cassette casing
+        mascot.style.transform = `translate3d(${targetDockX}px, ${targetDockY}px, 0)`;
+        return true;
+      }
+    } else if (isDockedOnCassette || isApproachingCassette) {
+      // User scrolled up: Automatically pick up mascot from cassette!
+      const wasDocked = isDockedOnCassette;
       isDockedOnCassette = false;
+      isApproachingCassette = false;
+      clearSpecialBehaviors();
       mascot.classList.remove("is-docked");
-      mascot.classList.add("is-undocking");
-      if (undockTimer) clearTimeout(undockTimer);
-      undockTimer = setTimeout(() => {
-        mascot.classList.remove("is-undocking");
-      }, 420);
+      mascot.classList.remove("is-running");
+
+      if (wasDocked) {
+        mascot.classList.add("is-picked-up");
+        if (pickUpTimer) clearTimeout(pickUpTimer);
+        pickUpTimer = setTimeout(() => {
+          mascot.classList.remove("is-picked-up");
+        }, 450);
+      }
+
+      behaviorState = "walk";
+      behaviorTimer = 2.0 + Math.random() * 2.0;
+      currentSpeed = 38 + Math.random() * 12;
     }
 
     return false;
@@ -639,9 +700,9 @@ hoverGalleries.forEach((gallery) => {
     lastFrameTime = now;
 
     if (mascot) {
-      const isDocked = updateMascotDocking();
+      const isHandlingDocking = updateMascotDocking(dt);
 
-      if (!isDocked) {
+      if (!isHandlingDocking) {
         const mascotWidth = mascot.offsetWidth || 68;
         const minX = 14;
         const maxX = Math.max(minX, window.innerWidth - mascotWidth - 14);
@@ -678,6 +739,7 @@ hoverGalleries.forEach((gallery) => {
           // Audio paused (taking a nap) or startled by scroll
           mascot.classList.remove("is-walking");
           mascot.classList.remove("is-hopping");
+          mascot.classList.remove("is-jamming");
         }
 
         // Clamp within screen bounds
@@ -713,18 +775,12 @@ hoverGalleries.forEach((gallery) => {
   if (mascot) {
     mascot.addEventListener("click", () => {
       togglePlayState();
-      if (isPlaying) {
-        triggerJollyHop();
-      }
     });
 
     mascot.addEventListener("keydown", (e) => {
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
         togglePlayState();
-        if (isPlaying) {
-          triggerJollyHop();
-        }
       }
     });
   }
