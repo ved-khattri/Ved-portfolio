@@ -601,6 +601,7 @@ hoverGalleries.forEach((gallery) => {
           behaviorState = "walk";
           behaviorTimer = 2.5 + Math.random() * 2.5;
           currentSpeed = 38 + Math.random() * 14;
+          updateMascotFacing();
         }, 1300);
       }, 1200);
     }, 1400);
@@ -749,7 +750,8 @@ hoverGalleries.forEach((gallery) => {
           clearSpecialBehaviors();
           mascot.classList.remove("is-running");
           mascot.classList.remove("is-walking");
-          mascot.classList.remove("facing-left");
+          walkDirection = 1; // Always face right when perched on cassette
+          updateMascotFacing();
           mascot.classList.add("is-docked");
         }
       }
@@ -776,6 +778,8 @@ hoverGalleries.forEach((gallery) => {
         }, 450);
       }
 
+      walkDirection = 1; // Always face and step rightward into the open screen when leaving cassette
+      updateMascotFacing();
       behaviorState = "walk";
       behaviorTimer = 2.0 + Math.random() * 2.0;
       currentSpeed = 38 + Math.random() * 12;
@@ -806,6 +810,7 @@ hoverGalleries.forEach((gallery) => {
           behaviorTimer -= dt;
 
           if (behaviorState === "walk") {
+            updateMascotFacing();
             mascotX += walkDirection * currentSpeed * dt;
             mascot.classList.add("is-walking");
 
