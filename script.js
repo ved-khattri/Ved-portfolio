@@ -382,7 +382,6 @@ hoverGalleries.forEach((gallery) => {
   // --- RETRO CASSETTE MUSIC PLAYER (RANDOM PLAYLIST) ---
   const deckCard = document.getElementById("cassette-deck-card");
   const cassetteAudio = document.getElementById("cassette-audio-element");
-  const miniVinylBtn = document.getElementById("mini-vinyl-btn");
 
   const playlist = [
     "assets/audio/purpose_is_glorious.mp3",
@@ -422,11 +421,6 @@ hoverGalleries.forEach((gallery) => {
   function playMusic() {
     isPlaying = true;
     if (deckCard) deckCard.classList.add("is-playing");
-    if (miniVinylBtn) {
-      miniVinylBtn.classList.add("is-playing");
-      miniVinylBtn.setAttribute("aria-label", "Pause background music");
-      miniVinylBtn.setAttribute("title", "Pause Music");
-    }
 
     if (cassetteAudio) {
       cassetteAudio.volume = 0.75;
@@ -442,11 +436,6 @@ hoverGalleries.forEach((gallery) => {
   function pauseMusic() {
     isPlaying = false;
     if (deckCard) deckCard.classList.remove("is-playing");
-    if (miniVinylBtn) {
-      miniVinylBtn.classList.remove("is-playing");
-      miniVinylBtn.setAttribute("aria-label", "Play background music");
-      miniVinylBtn.setAttribute("title", "Play Music");
-    }
 
     if (cassetteAudio) {
       cassetteAudio.pause();
@@ -469,20 +458,6 @@ hoverGalleries.forEach((gallery) => {
     });
 
     deckCard.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        togglePlayState();
-      }
-    });
-  }
-
-  if (miniVinylBtn) {
-    miniVinylBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      togglePlayState();
-    });
-
-    miniVinylBtn.addEventListener("keydown", (e) => {
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
         togglePlayState();
