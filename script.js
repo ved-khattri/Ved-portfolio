@@ -574,27 +574,30 @@ hoverGalleries.forEach((gallery) => {
 
     // Mid-screen autonomous character actions (NO RANDOM JUMPS!)
     const roll = Math.random();
-    if (roll < 0.32) {
+    if (roll < 0.38) {
       // 1. Casual Stroll (with slight chance to flip direction)
-      if (Math.random() < 0.25) {
+      if (Math.random() < 0.22) {
         walkDirection = -walkDirection;
         updateMascotFacing();
       }
       behaviorState = "walk";
-      behaviorTimer = 2.4 + Math.random() * 3.2;
+      behaviorTimer = 2.4 + Math.random() * 3.6;
       currentSpeed = 36 + Math.random() * 16;
-    } else if (roll < 0.62) {
-      behaviorState = "sniff";
-      behaviorTimer = 3.2 + Math.random() * 0.8;
-      sniffTurned = false;
-      mascot.classList.add("is-sniffing");
-    } else if (roll < 0.82) {
+    } else if (roll < 0.65) {
+      // 2. Lo-Fi Beat Groove (stand still and vibe)
+      behaviorState = "groove";
+      behaviorTimer = 2.2 + Math.random() * 2.8;
+    } else if (roll < 0.86) {
+      // 3. Headphone Jam & Fast Tail Wag (character action in place of random jump)
       behaviorState = "jam";
-      behaviorTimer = 2.2 + Math.random() * 2.2;
+      behaviorTimer = 2.2 + Math.random() * 2.5;
       mascot.classList.add("is-jamming");
     } else {
-      behaviorState = "groove";
-      behaviorTimer = 2.2 + Math.random() * 2.2;
+      // 4. Curious Search & Sniff Action
+      behaviorState = "sniff";
+      behaviorTimer = 3.0 + Math.random() * 0.6;
+      sniffTurned = false;
+      mascot.classList.add("is-sniffing");
     }
   }
 
