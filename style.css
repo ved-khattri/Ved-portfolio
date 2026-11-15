@@ -3933,8 +3933,8 @@ p.section-kicker::after {
   box-shadow: 1.5px 1.5px 0px rgba(66, 15, 2, 0.35);
   opacity: 0;
   transition:
-    opacity 0.1s ease,
-    transform 0.1s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+    opacity 0.22s ease,
+    transform 0.22s cubic-bezier(0.18, 0.89, 0.32, 1.28);
   z-index: 24;
 }
 
@@ -3952,7 +3952,8 @@ p.section-kicker::after {
   transform: rotate(45deg);
 }
 
-.mascot-platypus:hover:not(.is-speaking) .mascot-bubble {
+.mascot-platypus:hover:not(.is-speaking) .mascot-bubble,
+.mascot-platypus.show-auto-bubble:not(.is-speaking) .mascot-bubble {
   opacity: 1;
   transform: translateX(-50%) translateY(0) scale(1);
 }
@@ -3960,6 +3961,31 @@ p.section-kicker::after {
 .mascot-platypus.is-speaking .mascot-bubble {
   opacity: 0 !important;
   transform: translateX(-50%) translateY(3px) scale(0.92);
+}
+
+/* GLOWING PINK HEART */
+.heart-pink {
+  color: #ff2a85;
+  text-shadow:
+    0 0 4px #ff2a85,
+    0 0 8px rgba(255, 42, 133, 0.8),
+    0 0 14px rgba(255, 42, 133, 0.55);
+  font-style: normal;
+  font-weight: 900;
+  display: inline-block;
+  margin-left: 2px;
+  animation: heartPulse 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes heartPulse {
+  0% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 2px #ff2a85);
+  }
+  100% {
+    transform: scale(1.24);
+    filter: drop-shadow(0 0 6px #ff007f);
+  }
 }
 
 /* REACTIVE FLOATING REACTION TEXT (PET PURR, AH ON CLICK, PET HINT, DIG / NOM NOM) */
