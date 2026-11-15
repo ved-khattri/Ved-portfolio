@@ -3267,27 +3267,18 @@ p.section-kicker::after {
   }
 
   .nav-cta-pill {
-    display: inline-flex !important;
-    padding: 5px 12px;
-    font-size: 0.76rem;
-    letter-spacing: 0.06em;
+    display: none !important;
   }
 
   .navbar.scrolled {
-    max-width: 620px;
+    max-width: 580px;
     padding: 5px 12px;
     gap: 6px;
   }
 
   .navbar.scrolled .nav-link {
-    padding: 4px 7px;
+    padding: 4px 8px;
     font-size: 0.78rem;
-  }
-
-  .navbar.scrolled .nav-cta-pill {
-    display: inline-flex !important;
-    padding: 4px 10px;
-    font-size: 0.7rem;
   }
 
   .section-wrap,
