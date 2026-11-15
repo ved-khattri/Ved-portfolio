@@ -379,9 +379,11 @@ hoverGalleries.forEach((gallery) => {
     setActive(0);
   });
 
-  // --- RETRO CASSETTE MUSIC PLAYER (RANDOM PLAYLIST) ---
+  // --- RETRO CASSETTE MUSIC PLAYER & PIXEL PLATYPUS MASCOT ---
   const deckCard = document.getElementById("cassette-deck-card");
   const cassetteAudio = document.getElementById("cassette-audio-element");
+  const mascot = document.getElementById("mascot-platypus");
+  const mascotBubbleText = document.getElementById("mascot-bubble-text");
 
   const playlist = [
     "assets/audio/purpose_is_glorious.mp3",
@@ -421,6 +423,19 @@ hoverGalleries.forEach((gallery) => {
   function playMusic() {
     isPlaying = true;
     if (deckCard) deckCard.classList.add("is-playing");
+    if (mascot) {
+      mascot.classList.add("is-playing");
+      mascot.setAttribute("title", "Click to Pause Lo-Fi Beats");
+      if (
+        mascotBubbleText &&
+        !mascot.classList.contains("is-falling") &&
+        !mascot.classList.contains("is-angry")
+      ) {
+        mascotBubbleText.textContent = mascot.classList.contains("is-docked")
+          ? "Cassette DJ ♫"
+          : "Vibing ♫";
+      }
+    }
 
     if (cassetteAudio) {
       cassetteAudio.volume = 0.75;
@@ -436,6 +451,17 @@ hoverGalleries.forEach((gallery) => {
   function pauseMusic() {
     isPlaying = false;
     if (deckCard) deckCard.classList.remove("is-playing");
+    if (mascot) {
+      mascot.classList.remove("is-playing");
+      mascot.setAttribute("title", "Click to Play Lo-Fi Beats");
+      if (
+        mascotBubbleText &&
+        !mascot.classList.contains("is-falling") &&
+        !mascot.classList.contains("is-angry")
+      ) {
+        mascotBubbleText.textContent = "Zzz...";
+      }
+    }
 
     if (cassetteAudio) {
       cassetteAudio.pause();
@@ -462,6 +488,121 @@ hoverGalleries.forEach((gallery) => {
         e.preventDefault();
         togglePlayState();
       }
+    });
+  }
+
+  if (mascot) {
+    mascot.addEventListener("click", () => {
+      togglePlayState();
+    });
+
+    mascot.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        togglePlayState();
+      }
+    });
+  }
+
+  // --- PLATYPUS SCROLL ATTITUDE & CASSETTE DOCKING ---
+  let lastScrollY = window.scrollY;
+  let lastScrollTime = performance.now();
+  let reactionTimer = null;
+
+  function updateMascotCompanion() {
+    const currentScrollY = window.scrollY;
+    const now = performance.now();
+    const dt = Math.max(10, now - lastScrollTime);
+    const dy = currentScrollY - lastScrollY;
+    const velocity = dy / dt;
+
+    lastScrollY = currentScrollY;
+    lastScrollTime = now;
+
+    // 1. CASSETTE DOCKING CHECK AT PAGE BOTTOM
+    if (deckCard && mascot) {
+      const deckRect = deckCard.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+      const isCassetteVisible =
+        deckRect.top < windowHeight - 40 && deckRect.bottom > 60;
+      const isNearBottom =
+        windowHeight + currentScrollY >=
+        document.documentElement.scrollHeight - 700;
+
+      if (isCassetteVisible && isNearBottom) {
+        if (!mascot.classList.contains("is-docked")) {
+          mascot.classList.add("is-docked");
+          if (mascotBubbleText && isPlaying) {
+            mascotBubbleText.textContent = "Cassette DJ ♫";
+          }
+        }
+        const isMobile = window.innerWidth <= 768;
+        const topOffset = isMobile ? 44 : 52;
+        const leftOffset = isMobile ? 12 : 16;
+        mascot.style.position = "absolute";
+        mascot.style.top = `${deckRect.top + currentScrollY - topOffset}px`;
+        mascot.style.left = `${deckRect.left + window.scrollX + leftOffset}px`;
+        mascot.style.right = "auto";
+        mascot.style.bottom = "auto";
+        return; // While comfortably perched on cassette, skip fall/angry reactions
+      } else if (mascot.classList.contains("is-docked")) {
+        mascot.classList.remove("is-docked");
+        mascot.style.position = "";
+        mascot.style.top = "";
+        mascot.style.left = "";
+        mascot.style.right = "";
+        mascot.style.bottom = "";
+        if (mascotBubbleText) {
+          mascotBubbleText.textContent = isPlaying ? "Vibing ♫" : "Zzz...";
+        }
+      }
+    }
+
+    // 2. FAST SCROLL DOWN -> WORRIED & FALLING
+    if (dy > 20 && velocity > 0.55) {
+      if (reactionTimer) clearTimeout(reactionTimer);
+      mascot.classList.remove("is-angry");
+      mascot.classList.add("is-falling");
+      if (mascotBubbleText) mascotBubbleText.textContent = "WHOA! 💧";
+
+      reactionTimer = setTimeout(() => {
+        mascot.classList.remove("is-falling");
+        if (mascotBubbleText) {
+          mascotBubbleText.textContent = isPlaying ? "Vibing ♫" : "Zzz...";
+        }
+      }, 550);
+    }
+    // 3. FAST SCROLL UP -> JUMPED UP & ANGRY ATTITUDE
+    else if (dy < -20 && velocity < -0.55) {
+      if (reactionTimer) clearTimeout(reactionTimer);
+      mascot.classList.remove("is-falling");
+      mascot.classList.add("is-angry");
+      if (mascotBubbleText) mascotBubbleText.textContent = "HEY! 💢";
+
+      reactionTimer = setTimeout(() => {
+        mascot.classList.remove("is-angry");
+        if (mascotBubbleText) {
+          mascotBubbleText.textContent = isPlaying ? "Vibing ♫" : "Zzz...";
+        }
+      }, 650);
+    }
+  }
+
+  window.addEventListener("scroll", updateMascotCompanion, { passive: true });
+  window.addEventListener("resize", () => {
+    if (mascot && mascot.classList.contains("is-docked") && deckCard) {
+      const deckRect = deckCard.getBoundingClientRect();
+      const isMobile = window.innerWidth <= 768;
+      const topOffset = isMobile ? 44 : 52;
+      const leftOffset = isMobile ? 12 : 16;
+      mascot.style.top = `${deckRect.top + window.scrollY - topOffset}px`;
+      mascot.style.left = `${deckRect.left + window.scrollX + leftOffset}px`;
+    }
+  });
+
+  if (typeof lenis !== "undefined" && lenis) {
+    lenis.on("scroll", () => {
+      updateMascotCompanion();
     });
   }
 
