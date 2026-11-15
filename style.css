@@ -3854,18 +3854,24 @@ p.section-kicker::after {
 .sniff-puff {
   display: inline-block;
   font-family: var(--font-secondary), monospace;
-  font-size: 8.5px;
+  font-size: 9px;
   font-weight: 800;
-  letter-spacing: 0.03em;
+  font-style: italic;
+  letter-spacing: 0.04em;
   color: var(--deep-red);
-  background: rgba(255, 253, 249, 0.95);
-  border: 1px solid rgba(115, 28, 3, 0.45);
-  border-radius: 4px;
-  padding: 1px 4px;
-  box-shadow: 1px 1px 0px rgba(66, 15, 2, 0.35);
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
+  text-shadow:
+    1px 1px 0px rgba(255, 253, 249, 0.95),
+    -1px -1px 0px rgba(255, 253, 249, 0.95),
+    1px -1px 0px rgba(255, 253, 249, 0.95),
+    -1px 1px 0px rgba(255, 253, 249, 0.95);
   white-space: nowrap;
   opacity: 0;
-  line-height: 1.2;
+  line-height: 1;
 }
 
 .sniff-puff.sniff-1 {
