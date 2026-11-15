@@ -3196,16 +3196,31 @@ p.section-kicker::after {
     gap: 40px;
   }
 
-  .footer-nav-columns {
-    gap: 48px;
+  .footer-top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 24px;
+    flex-wrap: nowrap;
   }
 
-  .footer-top-row {
-    gap: 40px;
+  .footer-nav-columns {
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    gap: clamp(24px, 2.8vw, 36px);
+    flex: 1 1 auto;
+    max-width: 520px;
+  }
+
+  .footer-right-block {
+    max-width: 380px;
+    width: 100%;
+    flex: 0 1 380px;
   }
 
   .cassette-visual-frame {
-    max-width: 400px;
+    max-width: 370px;
+    width: 100%;
   }
 }
 
@@ -3252,18 +3267,27 @@ p.section-kicker::after {
   }
 
   .nav-cta-pill {
-    display: none !important;
+    display: inline-flex !important;
+    padding: 5px 12px;
+    font-size: 0.76rem;
+    letter-spacing: 0.06em;
   }
 
   .navbar.scrolled {
-    max-width: 580px;
+    max-width: 620px;
     padding: 5px 12px;
     gap: 6px;
   }
 
   .navbar.scrolled .nav-link {
-    padding: 4px 8px;
+    padding: 4px 7px;
     font-size: 0.78rem;
+  }
+
+  .navbar.scrolled .nav-cta-pill {
+    display: inline-flex !important;
+    padding: 4px 10px;
+    font-size: 0.7rem;
   }
 
   .section-wrap,
@@ -3526,7 +3550,7 @@ p.section-kicker::after {
     justify-content: space-between;
     align-items: flex-start;
     gap: 24px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     margin-bottom: 40px;
   }
 
