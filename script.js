@@ -501,8 +501,9 @@ hoverGalleries.forEach((gallery) => {
 
   let walkDirection = savedDir === "1" ? 1 : -1;
   let currentSpeed = 44; // pixels per second
-  let behaviorState = "walk"; // "walk", "groove", "hop", "look_around"
+  let behaviorState = "walk"; // "walk", "groove", "hop", "sniff", "jam"
   let behaviorTimer = 2.5 + Math.random() * 3;
+  let sniffTurned = false;
   let hopTimer = null;
   let lastFrameTime = performance.now();
   let lastSaveTime = 0;
@@ -530,6 +531,7 @@ hoverGalleries.forEach((gallery) => {
     if (!mascot) return;
     mascot.classList.remove("is-jamming");
     mascot.classList.remove("is-hopping");
+    mascot.classList.remove("is-sniffing");
   }
 
   function pickNextBehavior(currentX, minX, maxX) {
@@ -569,30 +571,30 @@ hoverGalleries.forEach((gallery) => {
 
     // Mid-screen autonomous character actions (NO RANDOM JUMPS!)
     const roll = Math.random();
-    if (roll < 0.38) {
+    if (roll < 0.32) {
       // 1. Casual Stroll (with slight chance to flip direction)
-      if (Math.random() < 0.2) {
+      if (Math.random() < 0.25) {
         walkDirection = -walkDirection;
         updateMascotFacing();
       }
       behaviorState = "walk";
-      behaviorTimer = 2.4 + Math.random() * 3.6;
+      behaviorTimer = 2.4 + Math.random() * 3.2;
       currentSpeed = 36 + Math.random() * 16;
-    } else if (roll < 0.65) {
-      // 2. Lo-Fi Beat Groove (stand still and vibe)
-      behaviorState = "groove";
-      behaviorTimer = 2.2 + Math.random() * 2.8;
-    } else if (roll < 0.86) {
+    } else if (roll < 0.62) {
+      // 2. Curious Searching & Sniffing Action! (Frequent & prominently visible)
+      behaviorState = "sniff";
+      behaviorTimer = 3.2 + Math.random() * 0.8;
+      sniffTurned = false;
+      mascot.classList.add("is-sniffing");
+    } else if (roll < 0.82) {
       // 3. Headphone Jam & Fast Tail Wag (character action in place of random jump)
       behaviorState = "jam";
-      behaviorTimer = 2.2 + Math.random() * 2.5;
+      behaviorTimer = 2.2 + Math.random() * 2.2;
       mascot.classList.add("is-jamming");
     } else {
-      // 4. Curious Sniff & Look Around
-      behaviorState = "look_around";
-      behaviorTimer = 1.4;
-      walkDirection = -walkDirection;
-      updateMascotFacing();
+      // 4. Lo-Fi Beat Groove (stand still and vibe)
+      behaviorState = "groove";
+      behaviorTimer = 2.2 + Math.random() * 2.2;
     }
   }
 
@@ -622,8 +624,8 @@ hoverGalleries.forEach((gallery) => {
       const cassetteTopRim = tapeRect.top + tapeRect.height * (70 / 352);
       const mascotH = mascot.offsetHeight || 68;
       const baseY = windowHeight - 12 - mascotH;
-      // Align feet directly onto the red cassette casing rim (no floating gap)
-      const targetDockY = cassetteTopRim - 27 - baseY;
+      // Align feet directly on top of the red cassette ledge (raised by 9px from previous sunken position)
+      const targetDockY = cassetteTopRim - 36 - baseY;
       const targetDockX = cassetteLeftRim;
 
       const distX = targetDockX - mascotX;
@@ -728,8 +730,22 @@ hoverGalleries.forEach((gallery) => {
             } else if (behaviorTimer <= 0) {
               pickNextBehavior(mascotX, minX, maxX);
             }
+          } else if (behaviorState === "sniff") {
+            mascot.classList.remove("is-walking");
+            mascot.classList.add("is-sniffing");
+
+            // Halfway through sniffing (after ~1.6s), turn around to search & sniff the other direction!
+            if (behaviorTimer <= 1.6 && !sniffTurned) {
+              sniffTurned = true;
+              walkDirection = -walkDirection;
+              updateMascotFacing();
+            }
+
+            if (behaviorTimer <= 0) {
+              pickNextBehavior(mascotX, minX, maxX);
+            }
           } else {
-            // Standing, grooving, hopping, or looking around
+            // Standing, grooving, jamming, or corner hop
             mascot.classList.remove("is-walking");
             if (behaviorTimer <= 0) {
               pickNextBehavior(mascotX, minX, maxX);
@@ -740,6 +756,7 @@ hoverGalleries.forEach((gallery) => {
           mascot.classList.remove("is-walking");
           mascot.classList.remove("is-hopping");
           mascot.classList.remove("is-jamming");
+          mascot.classList.remove("is-sniffing");
         }
 
         // Clamp within screen bounds
