@@ -208,27 +208,105 @@ document
     });
   });
 
-/*---3D HOVER EFFECT---*/
+/*---3D HOVER & TOUCH EFFECT---*/
 document.querySelectorAll(".hover-3d").forEach((container) => {
   const content = container.firstElementChild;
   if (!content) return;
 
-  container.addEventListener("mousemove", (e) => {
+  let isTouchActive = false;
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let hasMovedTouch = false;
+
+  function updateTilt(clientX, clientY, maxDeg = 10, scale = 1.03) {
     const rect = container.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const x = Math.max(0, Math.min(clientX - rect.left, rect.width));
+    const y = Math.max(0, Math.min(clientY - rect.top, rect.height));
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
 
-    const rotateX = ((y - centerY) / centerY) * -9;
-    const rotateY = ((x - centerX) / centerX) * 9;
+    const rotateX = ((y - centerY) / centerY) * -maxDeg;
+    const rotateY = ((x - centerX) / centerX) * maxDeg;
 
-    content.style.transform = `perspective(900px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) scale3d(1.02, 1.02, 1.02)`;
+    content.style.transform = `perspective(900px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) scale3d(${scale}, ${scale}, ${scale})`;
+  }
+
+  function resetTilt(smooth = true) {
+    content.style.transition = smooth
+      ? "transform 0.45s cubic-bezier(0.16, 1, 0.3, 1)"
+      : "";
+    content.style.transform = "";
+  }
+
+  // Desktop Mouse Events
+  container.addEventListener("mousemove", (e) => {
+    content.style.transition = "transform 0.08s ease-out";
+    updateTilt(e.clientX, e.clientY, 9, 1.02);
   });
 
   container.addEventListener("mouseleave", () => {
-    content.style.transform = "";
+    resetTilt(true);
   });
+
+  // Mobile & Tablet Touch Support (same as platypus)
+  container.addEventListener(
+    "touchstart",
+    (e) => {
+      if (e.touches && e.touches[0]) {
+        isTouchActive = true;
+        hasMovedTouch = false;
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+        content.style.transition = "transform 0.08s ease-out";
+        updateTilt(touchStartX, touchStartY, 11, 1.03);
+      }
+    },
+    { passive: true },
+  );
+
+  container.addEventListener(
+    "touchmove",
+    (e) => {
+      if (isTouchActive && e.touches && e.touches[0]) {
+        const touch = e.touches[0];
+        const dx = touch.clientX - touchStartX;
+        const dy = touch.clientY - touchStartY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist > 4) {
+          hasMovedTouch = true;
+          updateTilt(touch.clientX, touch.clientY, 12, 1.03);
+
+          // Prevent page scroll when deliberately rotating the 3D card
+          if (e.cancelable) {
+            e.preventDefault();
+          }
+        }
+      }
+    },
+    { passive: false },
+  );
+
+  const endTouch = () => {
+    if (isTouchActive) {
+      isTouchActive = false;
+      if (!hasMovedTouch) {
+        // Tap gesture: play a delightful springy 3D wobble bounce
+        content.style.transition =
+          "transform 0.55s cubic-bezier(0.18, 1.35, 0.3, 1)";
+        content.style.transform =
+          "perspective(900px) rotateX(6deg) rotateY(-8deg) scale3d(1.04, 1.04, 1.04)";
+        setTimeout(() => {
+          resetTilt(true);
+        }, 240);
+      } else {
+        resetTilt(true);
+      }
+    }
+  };
+
+  container.addEventListener("touchend", endTouch, { passive: true });
+  container.addEventListener("touchcancel", endTouch, { passive: true });
 });
 
 /*---MINDSET & INTERESTS TEXT RANDOMIZER (HOVER ONLY)---*/
@@ -340,18 +418,28 @@ if (marqueeTrack && marqueeBand) {
   requestAnimationFrame(tickMarquee);
 }
 
-/*---HOVER GALLERY---*/
+/*---HERO HOVER & TOUCH GALLERY---*/
 const hoverGalleries = document.querySelectorAll(".hover-gallery");
 hoverGalleries.forEach((gallery) => {
   const images = gallery.querySelectorAll(".poster-portrait-img, img");
   if (!images.length) return;
 
+  let currentIndex = 0;
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let hasScrubbedTouch = false;
+
   function setActive(index) {
+    currentIndex = Math.max(0, Math.min(index, images.length - 1));
     images.forEach((img, i) => {
-      img.style.opacity = i === index ? "1" : "0";
+      img.style.opacity = i === currentIndex ? "1" : "0";
     });
   }
 
+  // Set initial image
+  setActive(0);
+
+  // Desktop Mouse Events
   gallery.addEventListener("mousemove", (e) => {
     const rect = gallery.getBoundingClientRect();
     const x = e.clientX - rect.left;
@@ -364,23 +452,67 @@ hoverGalleries.forEach((gallery) => {
     setActive(0);
   });
 
+  // Mobile & Tablet Touch Support (same as platypus)
   gallery.addEventListener(
-    "touchmove",
+    "touchstart",
     (e) => {
       if (e.touches && e.touches[0]) {
-        const rect = gallery.getBoundingClientRect();
-        const x = e.touches[0].clientX - rect.left;
-        const progress = Math.max(0, Math.min(x / rect.width, 0.999));
-        const activeIndex = Math.floor(progress * images.length);
-        setActive(activeIndex);
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+        hasScrubbedTouch = false;
       }
     },
     { passive: true },
   );
 
-  gallery.addEventListener("touchend", () => {
-    setActive(0);
+  gallery.addEventListener(
+    "touchmove",
+    (e) => {
+      if (e.touches && e.touches[0]) {
+        const touch = e.touches[0];
+        const dx = touch.clientX - touchStartX;
+        const dy = touch.clientY - touchStartY;
+
+        // If horizontal scrubbing motion
+        if (Math.abs(dx) > 5) {
+          hasScrubbedTouch = true;
+          const rect = gallery.getBoundingClientRect();
+          const x = touch.clientX - rect.left;
+          const progress = Math.max(0, Math.min(x / rect.width, 0.999));
+          const activeIndex = Math.floor(progress * images.length);
+          setActive(activeIndex);
+
+          // Prevent page scroll when scrubbing across the hero photo
+          if (Math.abs(dx) > Math.abs(dy) && e.cancelable) {
+            e.preventDefault();
+          }
+        }
+      }
+    },
+    { passive: false },
+  );
+
+  gallery.addEventListener(
+    "touchend",
+    () => {
+      if (!hasScrubbedTouch) {
+        // Quick tap: cycle to the next photo!
+        const nextIndex = (currentIndex + 1) % images.length;
+        setActive(nextIndex);
+      }
+      // Keep the chosen photo visible on mobile (do not revert to 0 on lift!)
+    },
+    { passive: true },
+  );
+
+  // Also support click (desktop click or tablet tap)
+  gallery.addEventListener("click", () => {
+    if (!hasScrubbedTouch) {
+      const nextIndex = (currentIndex + 1) % images.length;
+      setActive(nextIndex);
+    }
   });
+});
 
   // --- RETRO CASSETTE MUSIC PLAYER & PIXEL PLATYPUS MASCOT ---
   const deckCard = document.getElementById("cassette-deck-card");
@@ -806,7 +938,12 @@ hoverGalleries.forEach((gallery) => {
 
         const isHovered = isHoveringMascot();
 
-        if (isPlaying && !isAlarmed && !isHovered && behaviorState !== "dig_find") {
+        if (
+          isPlaying &&
+          !isAlarmed &&
+          !isHovered &&
+          behaviorState !== "dig_find"
+        ) {
           behaviorTimer -= dt;
 
           if (behaviorState === "walk") {
@@ -959,7 +1096,8 @@ hoverGalleries.forEach((gallery) => {
       mascot.classList.remove("show-auto-bubble");
 
       if (mascotSpeechText) {
-        mascotSpeechText.innerHTML = 'purr purr~ <span class="heart-pink">♡</span>';
+        mascotSpeechText.innerHTML =
+          'purr purr~ <span class="heart-pink">♡</span>';
       }
     };
 
@@ -986,7 +1124,10 @@ hoverGalleries.forEach((gallery) => {
           // Must rub back-and-forth (at least 2 direction reversals and >= 65px stroke distance),
           // or do a continuous deliberate stroke of >= 110px across the body.
           // Slight hover drift (20-30px) will NEVER trigger this!
-          if ((strokeReversals >= 2 && petStrokeDist >= 65) || petStrokeDist >= 110) {
+          if (
+            (strokeReversals >= 2 && petStrokeDist >= 55) ||
+            petStrokeDist >= 110
+          ) {
             startPetPurr();
             petStrokeDist = 0;
             strokeReversals = 0;
@@ -1039,7 +1180,8 @@ hoverGalleries.forEach((gallery) => {
         behaviorState !== "dig_find"
       ) {
         if (mascotBubbleText) {
-          mascotBubbleText.innerHTML = 'Pet me! <span class="heart-pink">♡</span>';
+          mascotBubbleText.innerHTML =
+            'Pet me! <span class="heart-pink">♡</span>';
         }
         mascot.classList.add("show-auto-bubble");
 
@@ -1112,7 +1254,7 @@ hoverGalleries.forEach((gallery) => {
           if (autoPetHideTimer) clearTimeout(autoPetHideTimer);
         }
       },
-      { passive: true }
+      { passive: true },
     );
 
     mascot.addEventListener(
@@ -1159,7 +1301,7 @@ hoverGalleries.forEach((gallery) => {
           }
         }
       },
-      { passive: false }
+      { passive: false },
     );
 
     mascot.addEventListener(
@@ -1179,7 +1321,7 @@ hoverGalleries.forEach((gallery) => {
           stopPetPurr(true);
         }
       },
-      { passive: true }
+      { passive: true },
     );
 
     mascot.addEventListener(
@@ -1188,7 +1330,7 @@ hoverGalleries.forEach((gallery) => {
         stopPetPurr(true);
         suppressNextClick = false;
       },
-      { passive: true }
+      { passive: true },
     );
 
     mascot.addEventListener("click", (e) => {
@@ -1281,4 +1423,3 @@ hoverGalleries.forEach((gallery) => {
   ["click", "touchstart", "scroll", "keydown"].forEach((evt) => {
     window.addEventListener(evt, unlockAutoplay, { once: true, passive: true });
   });
-});

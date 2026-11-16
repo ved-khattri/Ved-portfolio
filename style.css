@@ -416,6 +416,12 @@ p.section-kicker::after {
   grid-template-rows: repeat(3, 1fr);
   perspective: 900px;
   transform-style: preserve-3d;
+  touch-action: pan-y;
+  -webkit-tap-highlight-color: transparent !important;
+  outline: none !important;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
 }
 
 .hover-3d > :first-child {
@@ -493,6 +499,56 @@ p.section-kicker::after {
   .hover-3d:has(> div:nth-child(9):hover) > :first-child {
     transform: rotateX(-8deg) rotateY(9deg) scale3d(1.02, 1.02, 1.02);
   }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .hover-3d > div:not(:first-child) {
+    pointer-events: none;
+  }
+}
+
+/* ELIMINATE MOBILE TAP HIGHLIGHT & BLUE OUTLINE ON HERO AND ABOUT IMAGES */
+.poster-center-visual,
+.poster-center-visual *,
+.hover-gallery,
+.hover-gallery *,
+.poster-portrait-wrap,
+.poster-portrait-wrap *,
+.hover-gallery-slots,
+.gallery-slot,
+.poster-portrait-img,
+.hover-3d,
+.hover-3d *,
+.about-image-card,
+.about-image-card *,
+.about-portrait-frame,
+.about-portrait-frame *,
+.about-portrait-content,
+.about-portrait-content *,
+.about-portrait-img {
+  -webkit-tap-highlight-color: transparent !important;
+  outline: none !important;
+  -webkit-focus-ring-color: transparent !important;
+  -webkit-touch-callout: none;
+}
+
+.poster-center-visual:focus,
+.poster-center-visual:active,
+.poster-center-visual *:focus,
+.poster-center-visual *:active,
+.hover-gallery:focus,
+.hover-gallery:active,
+.hover-gallery *:focus,
+.hover-gallery *:active,
+.gallery-slot:focus,
+.gallery-slot:active,
+.hover-3d:focus,
+.hover-3d:active,
+.hover-3d *:focus,
+.hover-3d *:active {
+  -webkit-tap-highlight-color: transparent !important;
+  outline: none !important;
+  -webkit-focus-ring-color: transparent !important;
 }
 
 /*---NAVBAR---*/
@@ -1274,6 +1330,12 @@ p.section-kicker::after {
   padding: 0;
   overflow: visible;
   filter: drop-shadow(0px 12px 24px rgba(42, 9, 3, 0.35));
+  touch-action: pan-y;
+  -webkit-tap-highlight-color: transparent !important;
+  outline: none !important;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
 }
 
 .hover-gallery.poster-portrait-wrap .poster-portrait-img {
@@ -1308,6 +1370,11 @@ p.section-kicker::after {
 .gallery-slot {
   height: 100%;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent !important;
+  outline: none !important;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
 }
 
 .hover-gallery.poster-portrait-wrap:has(.gallery-slot:nth-child(1):hover)
