@@ -73,6 +73,9 @@ if (typeof Lenis !== "undefined") {
 
   lenis.on("scroll", (e) => {
     updateNavbar(e.scroll);
+    if (typeof unlockAutoplay === "function") {
+      unlockAutoplay();
+    }
   });
 
   document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
@@ -573,7 +576,7 @@ hoverGalleries.forEach((gallery) => {
   }
 
   function togglePlayState() {
-    if (isPlaying) {
+    if (cassetteAudio && !cassetteAudio.paused) {
       pauseMusic();
     } else {
       playMusic();
@@ -1408,18 +1411,83 @@ hoverGalleries.forEach((gallery) => {
   if (typeof lenis !== "undefined" && lenis) {
     lenis.on("scroll", () => {
       updateMascotScrollAttitude();
+      unlockAutoplay();
     });
   }
 
   // Autoplay on load
   playMusic();
 
-  // If browser policy delays audio until first interaction, unlock seamlessly:
+  // --- PERSISTENT SEAMLESS AUDIO UNLOCK ENGINE ---
+  const audioUnlockEvents = [
+    "scroll",
+    "wheel",
+    "touchmove",
+    "touchstart",
+    "touchend",
+    "pointerdown",
+    "pointerup",
+    "pointermove",
+    "mousedown",
+    "mouseup",
+    "keydown",
+    "click",
+  ];
+
+  let isAudioUnlocked = false;
+  let audioContext = null;
+
+  function resumeAudioContext() {
+    try {
+      if (!audioContext) {
+        const AudioContextClass =
+          window.AudioContext || window.webkitAudioContext;
+        if (AudioContextClass) {
+          audioContext = new AudioContextClass();
+        }
+      }
+      if (audioContext && audioContext.state === "suspended") {
+        audioContext.resume().catch(() => {});
+      }
+    } catch (e) {}
+  }
+
   function unlockAutoplay() {
-    if (isPlaying && cassetteAudio && cassetteAudio.paused) {
-      cassetteAudio.play().catch(() => {});
+    if (isAudioUnlocked) return;
+    if (!isPlaying) return; // If user explicitly paused, don't force play
+
+    resumeAudioContext();
+
+    if (cassetteAudio && cassetteAudio.paused) {
+      cassetteAudio.volume = 0.75;
+      const playPromise = cassetteAudio.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            isAudioUnlocked = true;
+            detachAudioUnlockListeners();
+            if (deckCard) deckCard.classList.add("is-playing");
+            if (mascot) mascot.classList.add("is-playing");
+          })
+          .catch(() => {
+            // Browser still requires direct gesture; keep listeners active so next scroll/touch/wheel succeeds!
+          });
+      }
+    } else if (cassetteAudio && !cassetteAudio.paused) {
+      isAudioUnlocked = true;
+      detachAudioUnlockListeners();
     }
   }
-  ["click", "touchstart", "scroll", "keydown"].forEach((evt) => {
-    window.addEventListener(evt, unlockAutoplay, { once: true, passive: true });
+
+  function detachAudioUnlockListeners() {
+    audioUnlockEvents.forEach((evt) => {
+      window.removeEventListener(evt, unlockAutoplay);
+      document.removeEventListener(evt, unlockAutoplay);
+    });
+  }
+
+  // Attach to both window and document without { once: true } so it persists until successful playback
+  audioUnlockEvents.forEach((evt) => {
+    window.addEventListener(evt, unlockAutoplay, { passive: true });
+    document.addEventListener(evt, unlockAutoplay, { passive: true });
   });
