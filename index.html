@@ -15,6 +15,7 @@
       content="Ved Khattri, Ved Pasco, Nazariya, IIM Bangalore, Portfolio, BBA DBE, Creator, Builder, Founder Branding, Brand Strategy, AI Automation"
     />
     <meta name="theme-color" content="#FBF4EE" />
+    <link rel="canonical" href="https://vedportfolio-gamma.vercel.app/" />
 
     <!-- Open Graph / Facebook / LinkedIn / WhatsApp -->
     <meta property="og:type" content="website" />
@@ -43,6 +44,10 @@
       property="og:image:alt"
       content="Ved Khattri - NAZARIYA. Portfolio 2026"
     />
+    <meta
+      property="og:logo"
+      content="https://vedportfolio-gamma.vercel.app/assets/images/logos/vp_log.webp"
+    />
     <meta property="og:locale" content="en_US" />
     <link
       rel="image_src"
@@ -69,11 +74,50 @@
       content="Ved Khattri - NAZARIYA. Portfolio 2026"
     />
     <!-- Favicon & Touch Icons -->
-    <link rel="icon" type="image/x-icon" href="https://vedportfolio-gamma.vercel.app/favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href="https://vedportfolio-gamma.vercel.app/assets/images/favicons/favicon.svg" />
+    <link rel="icon" type="image/x-icon" href="https://vedportfolio-gamma.vercel.app/assets/images/favicons/favicon.ico" />
     <link rel="icon" type="image/png" sizes="32x32" href="https://vedportfolio-gamma.vercel.app/assets/images/favicons/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="https://vedportfolio-gamma.vercel.app/assets/images/favicons/favicon-16x16.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="https://vedportfolio-gamma.vercel.app/assets/images/favicons/apple-touch-icon.png" />
     <link rel="manifest" href="https://vedportfolio-gamma.vercel.app/assets/images/favicons/site.webmanifest" />
+
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Person",
+          "@id": "https://vedportfolio-gamma.vercel.app/#person",
+          "name": "Ved Khattri",
+          "alternateName": "Ved Pasco",
+          "url": "https://vedportfolio-gamma.vercel.app/",
+          "image": "https://vedportfolio-gamma.vercel.app/assets/images/og-image.jpg",
+          "description": "BBA candidate at IIM Bangalore, creator and builder exploring digital business, brand systems, and AI workflows.",
+          "jobTitle": "Creator & Builder",
+          "alumniOf": {
+            "@type": "CollegeOrUniversity",
+            "name": "Indian Institute of Management Bangalore",
+            "sameAs": "https://www.iimb.ac.in/"
+          },
+          "sameAs": [
+            "https://www.linkedin.com/in/ved-khattri",
+            "https://www.instagram.com/vpasco_"
+          ]
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://vedportfolio-gamma.vercel.app/#website",
+          "url": "https://vedportfolio-gamma.vercel.app/",
+          "name": "Ved Khattri - NAZARIYA. | Portfolio 2026",
+          "description": "BBA candidate at IIM Bangalore, creator and builder. Exploring digital business, brand systems, and AI workflows with an authentic Indian editorial aesthetic.",
+          "publisher": {
+            "@id": "https://vedportfolio-gamma.vercel.app/#person"
+          }
+        }
+      ]
+    }
+    </script>
     <link
       rel="preload"
       as="image"
